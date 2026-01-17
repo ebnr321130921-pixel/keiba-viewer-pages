@@ -493,9 +493,24 @@ th.sticky-left-1, th.sticky-left-2 {
   box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset;
 }
 .card .hname {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-weight: 1000;
   font-size: 15px;
   line-height: 1.15;
+}
+.card .hname .htext {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.card .hname .hscore {
+  flex: 0 0 auto;
+  transform: translateY(-1px);
+}
+.card .hname .hscore .pill {
+  padding: 5px 9px;
+  font-size: 11px;
 }
 .card .marks {
   display: flex;
@@ -533,11 +548,17 @@ th.sticky-left-1, th.sticky-left-2 {
 .card.collapsed .hname {
   font-size: 14px;
 }
+.card.collapsed .hname .hscore .pill {
+  padding: 5px 9px;
+  font-size: 11px;
+}
 .card.collapsed .marks {
   opacity: 0.95;
   flex-direction: row;
   gap: 8px;
   align-items: center;
+  justify-content: flex-end;
+  white-space: nowrap;
 }
 .card.collapsed .marks .mstrong {
   font-size: 15px;
