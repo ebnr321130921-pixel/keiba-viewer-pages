@@ -15,69 +15,83 @@
   --line: rgba(255,255,255,0.10);
   --th: rgba(255,255,255,0.07);
   --chip: rgba(255,255,255,0.08);
+  --shadow: 0 10px 24px rgba(0,0,0,0.35);
+  --shadow2: 0 6px 16px rgba(0,0,0,0.30);
 }
 
 * { box-sizing: border-box; }
+html, body { height: 100%; }
 body {
   margin: 0;
-  background: var(--bg);
+  background: radial-gradient(1200px 800px at 15% 10%, rgba(90,140,255,0.10), transparent 55%),
+              radial-gradient(900px 700px at 85% 0%, rgba(255,220,120,0.07), transparent 60%),
+              var(--bg);
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
 }
 
 .topbar {
   position: sticky;
   top: 0;
-  z-index: 10;
-  background: linear-gradient(180deg, rgba(15,17,21,0.98), rgba(15,17,21,0.88));
-  backdrop-filter: blur(10px);
+  z-index: 20;
+  background: linear-gradient(180deg, rgba(15,17,21,0.98), rgba(15,17,21,0.86));
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
-  padding: 10px 12px calc(10px + env(safe-area-inset-bottom)) 12px;
+  padding: calc(10px + env(safe-area-inset-top)) 12px 10px 12px;
 }
 
 .controls {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto auto;
-  gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   align-items: center;
 }
 
 .select {
-  width: 100%;
+  width: auto;
+  min-width: 140px;
+  flex: 1 1 140px;
   padding: 10px 12px;
-  background: var(--panel);
+  background: rgba(20,24,35,0.92);
   color: var(--text);
   border: 1px solid var(--line);
   border-radius: 12px;
-  font-size: 15px;
+  font-size: 14px;
   outline: none;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset;
+}
+
+.select:focus {
+  border-color: rgba(120,170,255,0.55);
+  box-shadow: 0 0 0 3px rgba(120,170,255,0.10);
 }
 
 .badge {
   padding: 10px 12px;
-  background: var(--panel);
+  background: rgba(20,24,35,0.92);
   border: 1px solid var(--line);
   border-radius: 12px;
-  font-weight: 800;
-  font-size: 14px;
+  font-weight: 900;
+  font-size: 12px;
   white-space: nowrap;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset;
 }
-
 .badge.sub {
   font-weight: 700;
-  font-size: 13px;
   opacity: 0.95;
 }
 
 .racename {
   margin-top: 10px;
   padding: 10px 12px;
-  background: var(--panel2);
+  background: rgba(16,19,27,0.92);
   border: 1px solid var(--line);
   border-radius: 12px;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 900;
-  line-height: 1.3;
+  line-height: 1.25;
+  box-shadow: var(--shadow2);
 }
 
 .racemeta {
@@ -88,31 +102,37 @@ body {
 }
 
 .chip {
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: 999px;
   border: 1px solid var(--line);
-  background: var(--chip);
-  font-size: 17px;
+  background: rgba(255,255,255,0.06);
+  font-size: 13px;
   color: var(--muted);
   white-space: nowrap;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset;
+  transition: transform 120ms ease, filter 120ms ease;
 }
 .chip b {
   color: var(--text);
   margin-right: 8px;
 }
+.chip:active {
+  transform: scale(0.98);
+  filter: brightness(1.05);
+}
 
 /* 馬場色（見やすい濃色） */
-.chip.baba-turf { background: rgba(0, 160, 70, 0.48); color: #f3fff5; border-color: rgba(0,160,70,0.78); }
-.chip.baba-dirt { background: rgba(140, 85, 55, 0.52); color: #fff5ef; border-color: rgba(140,85,55,0.80); }
-.chip.baba-jump { background: rgba(0, 145, 165, 0.50); color: #effdff; border-color: rgba(0,145,165,0.80); }
+.chip.baba-turf { background: rgba(0, 160, 70, 0.44); color: #f3fff5; border-color: rgba(0,160,70,0.70); }
+.chip.baba-dirt { background: rgba(140, 85, 55, 0.48); color: #fff5ef; border-color: rgba(140,85,55,0.72); }
+.chip.baba-jump { background: rgba(0, 145, 165, 0.46); color: #effdff; border-color: rgba(0,145,165,0.72); }
 
 /* おすすめ色（見やすい濃色） */
-.chip.rank-s  { background: rgba(220, 170, 0, 0.62); color: #1a1400; border-color: rgba(220,170,0,0.92); }
-.chip.rank-a  { background: rgba(0, 95, 210, 0.62); color: #f2f7ff; border-color: rgba(0,95,210,0.92); }
-.chip.rank-ng { background: rgba(210, 55, 55, 0.62); color: #fff3f3; border-color: rgba(210,55,55,0.92); }
+.chip.rank-s  { background: rgba(220, 170, 0, 0.56); color: #1a1400; border-color: rgba(220,170,0,0.85); }
+.chip.rank-a  { background: rgba(0, 95, 210, 0.56); color: #f2f7ff; border-color: rgba(0,95,210,0.85); }
+.chip.rank-ng { background: rgba(210, 55, 55, 0.56); color: #fff3f3; border-color: rgba(210,55,55,0.85); }
 
 .wrapper {
-  padding: 12px 12px 24px 12px;
+  padding: 12px 12px calc(24px + env(safe-area-inset-bottom)) 12px;
 }
 
 .tablewrap {
@@ -120,7 +140,8 @@ body {
   border: 1px solid var(--line);
   border-radius: 14px;
   overflow: hidden;
-  background: var(--panel2);
+  background: rgba(16,19,27,0.88);
+  box-shadow: var(--shadow);
 }
 
 .scroll {
@@ -128,16 +149,28 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+.scroll::-webkit-scrollbar {
+  height: 10px;
+}
+.scroll::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.18);
+  border-radius: 999px;
+}
+.scroll::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.06);
+}
+
 table {
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   width: 100%;
-  min-width: 1200px;
+  min-width: 980px;
 }
 
 th, td {
   border-bottom: 1px solid var(--line);
-  padding: 10px 10px;
-  font-size: 17px;
+  padding: 8px 10px;
+  font-size: 13px;
   text-align: center;
   white-space: nowrap;
 }
@@ -146,60 +179,210 @@ th {
   position: sticky;
   top: 0;
   z-index: 5;
-  background: var(--th);
+  background: rgba(255,255,255,0.06);
   font-weight: 900;
-  font-size: 17px;
+  font-size: 12px;
+  letter-spacing: 0.02em;
 }
 
 tbody tr:nth-child(even) {
   background: rgba(255,255,255,0.02);
 }
 
+tbody tr {
+  transition: transform 120ms ease, filter 120ms ease;
+}
+tbody tr:active {
+  transform: scale(0.995);
+  filter: brightness(1.06);
+}
+
 td.vstack {
   white-space: pre-line;
-  line-height: 1.22;
-  font-size: 17px;
+  line-height: 1.20;
+  font-size: 12px;
 }
 
 td.umaban {
   font-weight: 900;
   border-radius: 10px;
-  padding: 10px 12px;
-  font-size: 17px;
+  padding: 8px 10px;
+  font-size: 13px;
 }
 
 td.horse {
   font-weight: 900;
-  font-size: 17px;
-  text-align: center;
+  font-size: 13px;
+  text-align: left;
 }
 
 td.bigcell {
-  font-size: 17px;
+  font-size: 13px;
   font-weight: 800;
+}
+
+/* sticky columns（馬番・馬名） */
+.sticky-left-1 {
+  position: sticky;
+  left: 0;
+  z-index: 6;
+  background: rgba(16,19,27,0.96);
+}
+.sticky-left-2 {
+  position: sticky;
+  left: 72px;
+  z-index: 6;
+  background: rgba(16,19,27,0.96);
+}
+th.sticky-left-1, th.sticky-left-2 {
+  z-index: 8;
+  background: rgba(18,22,32,0.98);
+}
+/* sticky の境界線 */
+.sticky-left-1::after, .sticky-left-2::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -1px;
+  width: 1px;
+  height: 100%;
+  background: rgba(255,255,255,0.10);
 }
 
 /* JRA 枠色（淡め） + 黒字は白枠のみ */
 .waku-1 { background: #ffffff; color: #111; }          /* 白 -> 黒文字 */
-.waku-2 { background: #2b2b2b; color: #fff; }          /* 黒 -> 白文字（淡め） */
-.waku-3 { background: #c65a5a; color: #fff; }          /* 赤（淡め） */
-.waku-4 { background: #4f7db8; color: #fff; }          /* 青（淡め） */
-.waku-5 { background: #b99a00; color: #fff; }          /* 黄（淡め） */
-.waku-6 { background: #2f8f5a; color: #fff; }          /* 緑（淡め） */
-.waku-7 { background: #c97a2a; color: #fff; }          /* 橙（淡め） */
-.waku-8 { background: #c46ab0; color: #fff; }          /* 桃（淡め） */
+.waku-2 { background: #2b2b2b; color: #fff; }          /* 黒 -> 白文字 */
+.waku-3 { background: #c65a5a; color: #fff; }          /* 赤 */
+.waku-4 { background: #4f7db8; color: #fff; }          /* 青 */
+.waku-5 { background: #b99a00; color: #fff; }          /* 黄 */
+.waku-6 { background: #2f8f5a; color: #fff; }          /* 緑 */
+.waku-7 { background: #c97a2a; color: #fff; }          /* 橙 */
+.waku-8 { background: #c46ab0; color: #fff; }          /* 桃 */
 
 /* 印による馬名強調 */
-.hmark-ss { color: #ffd34d; } /* ◎/◉ */
-.hmark-s  { color: #a8d5ff; } /* ○ */
-.hmark-m  { color: #ff9fc9; } /* ▲ */
+.hmark-ss { color: #ffd34d; }
+.hmark-s  { color: #a8d5ff; }
+.hmark-m  { color: #ff9fc9; }
 .hmark-w  { color: #e9edf5; }
+
+/* ---- mobile cards ---- */
+.cardwrap {
+  display: none;
+  margin-top: 12px;
+}
+.cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.card {
+  border: 1px solid var(--line);
+  background: rgba(16,19,27,0.88);
+  border-radius: 16px;
+  box-shadow: var(--shadow2);
+  overflow: hidden;
+  transform: translateY(0);
+  animation: fadeUp 180ms ease both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.card .c1 {
+  display: grid;
+  grid-template-columns: 68px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 12px 8px 12px;
+}
+.card .umabadge {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 44px;
+  border-radius: 14px;
+  font-weight: 1000;
+  font-size: 16px;
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset;
+}
+.card .hname {
+  font-weight: 1000;
+  font-size: 15px;
+  line-height: 1.15;
+}
+.card .marks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+  font-size: 12px;
+  color: var(--muted);
+}
+.card .marks .mstrong {
+  font-size: 16px;
+  font-weight: 1000;
+  color: var(--text);
+}
+.card .grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 10px;
+  padding: 10px 12px 12px 12px;
+  border-top: 1px solid var(--line);
+}
+.kv {
+  display: grid;
+  grid-template-columns: 78px 1fr;
+  gap: 8px;
+  align-items: baseline;
+}
+.kv .k {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.kv .v {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 900;
+  white-space: pre-line;
+  line-height: 1.20;
+}
+.kv.full {
+  grid-column: 1 / -1;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  font-weight: 900;
+  font-size: 12px;
+}
+.pill.p-score { background: rgba(120,170,255,0.14); border-color: rgba(120,170,255,0.26); }
+.pill.p-u    { background: rgba(255,210,120,0.12); border-color: rgba(255,210,120,0.22); }
+.pill.p-n    { background: rgba(255,255,255,0.06); }
 
 .footer {
   margin-top: 10px;
   color: var(--muted);
-  font-size: 13px;
-  line-height: 1.4;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* Responsive tweaks */
+@media (max-width: 560px) {
+  .select { min-width: 120px; flex-basis: 120px; font-size: 13px; padding: 10px 10px; }
+  .badge  { font-size: 11px; padding: 10px 10px; }
+  .racename { font-size: 14px; }
+  .chip { font-size: 12px; padding: 8px 12px; }
+  .tablewrap { display: none; }
+  .cardwrap { display: block; }
 }
 </style>
 </head>
@@ -209,8 +392,8 @@ td.bigcell {
 <div class="topbar">
   <div class="controls">
     <select id="trackSel" class="select"></select>
-    <select id="raceSel" class="select" style="max-width: 140px;"></select>
-    <select id="sortSel" class="select" style="max-width: 200px;">
+    <select id="raceSel" class="select"></select>
+    <select id="sortSel" class="select">
       <option value="mark" selected>ソート：予想印</option>
       <option value="ninki">ソート：人気</option>
       <option value="umaban">ソート：馬番</option>
@@ -237,8 +420,13 @@ td.bigcell {
     </div>
   </div>
 
+  <div class="cardwrap">
+    <div id="cards" class="cards"></div>
+  </div>
+
   <div class="footer">
-    ・スマホは左右にスワイプで表を横スクロールできます。<br/>
+    ・スマホは自動でカード表示になります（横スクロール不要）。<br/>
+    ・PCは表表示（馬番/馬名は固定）です。<br/>
     ・CSVを更新したら、再度 Viwer_EDIT.py を実行してHTMLを生成してください。
   </div>
 </div>
@@ -250,14 +438,49 @@ const RACE_INFO_COLS = ["馬場", "馬場状態", "クラス", "おすすめラ�
 
 function el(id) { return document.getElementById(id); }
 
+function isMobile() {
+  try {
+    return window.matchMedia("(max-width: 560px)").matches;
+  } catch (e) {
+    return false;
+  }
+}
+
+function colClass(c) {
+  if (c === "馬番") return "col-umaban";
+  if (c === "馬名") return "col-horse";
+  if (c === "予想印") return "col-mark";
+  if (c === "人気") return "col-ninki";
+  if (c === "予測/着順") return "col-pr";
+  if (c === "スコア") return "col-score";
+  if (c === "U指数") return "col-uindex";
+  if (c === "脚質(推定)") return "col-k";
+  return "";
+}
+
 function buildHead() {
   const thead = el("thead");
   const tr = document.createElement("tr");
+
+  let leftOffset2 = 72; // 馬番列幅想定
   for (const c of DISPLAY_COLS) {
     const th = document.createElement("th");
     th.textContent = c;
+
+    if (c === "馬番") {
+      th.classList.add("sticky-left-1");
+      th.style.minWidth = "72px";
+      th.style.width = "72px";
+    }
+    if (c === "馬名") {
+      th.classList.add("sticky-left-2");
+      th.style.left = leftOffset2 + "px";
+      th.style.minWidth = "160px";
+    }
+
     tr.appendChild(th);
   }
+
   thead.innerHTML = "";
   thead.appendChild(tr);
 }
@@ -451,7 +674,7 @@ function renderMeta(infoObj) {
   }
 }
 
-function renderRows(rows) {
+function renderRowsTable(rows) {
   const tbody = el("tbody");
   tbody.innerHTML = "";
 
@@ -470,10 +693,13 @@ function renderRows(rows) {
       if (c === "馬名") {
         td.classList.add("horse");
         td.classList.add(markClass(r["予想印"]));
+        td.classList.add("sticky-left-2");
+        td.style.left = "72px";
       }
 
       if (c === "馬番") {
         td.classList.add("umaban");
+        td.classList.add("sticky-left-1");
         const wc = wakuClass(r["__枠番"]);
         if (wc) td.classList.add(wc);
       }
@@ -487,6 +713,69 @@ function renderRows(rows) {
 
     tbody.appendChild(tr);
   }
+}
+
+function pill(html, cls) {
+  return `<span class="pill ${cls}">${html}</span>`;
+}
+
+function renderRowsCards(rows) {
+  const cards = el("cards");
+  cards.innerHTML = "";
+
+  for (const r of rows) {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const umaban = escapeHtml(r["馬番"] ?? "");
+    const horse = escapeHtml(r["馬名"] ?? "");
+    const mark = escapeHtml(r["予想印"] ?? "");
+    const ninki = escapeHtml(r["人気"] ?? "");
+    const pr = escapeHtml(r["予測/着順"] ?? "");
+    const score = escapeHtml(r["スコア"] ?? "");
+    const uidx = escapeHtml(r["U指数"] ?? "");
+    const ky = escapeHtml(r["騎手/調教師"] ?? "");
+    const shisu = escapeHtml(r["指数印"] ?? "");
+    const ml = escapeHtml(r["ML印"] ?? "");
+
+    const waku = wakuClass(r["__枠番"]);
+    const hcls = markClass(r["予想印"]);
+
+    const head = document.createElement("div");
+    head.className = "c1";
+    head.innerHTML = `
+      <div class="umabadge ${waku}">${umaban || "—"}</div>
+      <div class="hname ${hcls}">${horse || "（馬名なし）"}</div>
+      <div class="marks">
+        <div class="mstrong">${mark || "—"}</div>
+        <div>${ninki || ""}</div>
+      </div>
+    `;
+
+    const grid = document.createElement("div");
+    grid.className = "grid";
+    grid.innerHTML = `
+      <div class="kv"><div class="k">予測/着順</div><div class="v">${pr || "—"}</div></div>
+      <div class="kv"><div class="k">指数</div><div class="v">${pill(score || "—", "p-score")} ${pill(uidx || "—", "p-u")}</div></div>
+      <div class="kv"><div class="k">指数印</div><div class="v">${shisu || "—"}</div></div>
+      <div class="kv"><div class="k">ML印</div><div class="v">${ml || "—"}</div></div>
+      <div class="kv full"><div class="k">騎手/調教師</div><div class="v">${ky || "—"}</div></div>
+    `;
+
+    card.appendChild(head);
+    card.appendChild(grid);
+    cards.appendChild(card);
+  }
+}
+
+function renderRows(rows) {
+  if (isMobile()) {
+    renderRowsCards(rows);
+    renderRowsTable([]);
+    return;
+  }
+  renderRowsCards([]);
+  renderRowsTable(rows);
 }
 
 function getDefaultDate() {
@@ -550,6 +839,8 @@ function loadRaces(track, preferRaceNo) {
   return races[0];
 }
 
+let lastRenderedKey = "";
+
 function render(track, raceNo) {
   const obj = ((((DATA.races[curDate] || {})[track] || {})[raceNo]) || null);
   const raceName = el("raceName");
@@ -567,6 +858,18 @@ function render(track, raceNo) {
   const mode = el("sortSel").value || "mark";
   const sorted = sortRows(obj.rows || [], mode);
   renderRows(sorted);
+
+  lastRenderedKey = `${track}__${raceNo}__${mode}__${isMobile() ? "m" : "d"}`;
+}
+
+function rerenderIfNeeded() {
+  const t = el("trackSel").value;
+  const r = el("raceSel").value;
+  const mode = el("sortSel").value || "mark";
+  const key = `${t}__${r}__${mode}__${isMobile() ? "m" : "d"}`;
+  if (key !== lastRenderedKey) {
+    render(t, r);
+  }
 }
 
 function init() {
@@ -595,6 +898,14 @@ function init() {
     const r = el("raceSel").value;
     render(t, r);
   });
+
+  window.addEventListener("resize", () => {
+    rerenderIfNeeded();
+  }, { passive: true });
+
+  window.addEventListener("orientationchange", () => {
+    setTimeout(() => rerenderIfNeeded(), 50);
+  }, { passive: true });
 }
 
 init();
