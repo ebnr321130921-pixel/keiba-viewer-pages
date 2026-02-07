@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YOSOUKA Tipster Performance</title>
+  <style>
+    :root {
+      --bg0:#0b0f14; --card:#111821;
+      --line:#1f2a36; --text:#e8eef6; --muted:#a9b4c0;
+      --pill:#121c27;
+
+      /* 金/銀 */
+      --gold1: rgba(255, 215, 0, .90);
+      --gold2: rgba(255, 215, 0, .30);
+      --silver1: rgba(192, 192, 192, .90);
+      --silver2: rgba(192, 192, 192, .25);
+    }
+    body {
+      margin:0; padding:16px;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;
+      background: radial-gradient(1200px 500px at 20% 0%, #0d1b2a 0%, var(--bg0) 55%) , var(--bg0);
+      color:var(--text);
+    }
+    .top {
+      display:flex; gap:10px; align-items:flex-end; justify-content:space-between; flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    h1 { font-size:16px; margin:0; letter-spacing:.02em; }
+    .meta { font-size:12px; color:var(--muted); }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    .controls {
+      display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:8px;
+    }
+    .pill {
+      background:var(--pill);
+      border:1px solid var(--line);
+      color:var(--text);
+      border-radius:999px;
+      padding:8px 10px;
+      font-size:12px;
+    }
+    .btn {
+      background:var(--pill);
+      border:1px solid var(--line);
+      color:var(--text);
+      border-radius:999px;
+      padding:8px 10px;
+      font-size:12px;
+    }
+    .btn.active { outline:2px solid rgba(255,215,0,.25); }
+
+    .row {
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:6px;
+      padding:10px 0;
+      border-bottom:1px solid rgba(31,42,54,.7);
+    }
+    .row:last-child { border-bottom:none; }
+
+    .name {
+      display:flex; align-items:baseline; justify-content:space-between; gap:10px;
+      font-size:13px;
+    }
+    .stats {
+      margin-top:2px;
+      font-size:11px;
+      color:var(--muted);
+      line-height:1.55;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .barwrap {
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(31,42,54,.9);
+      border-radius:12px;
+      overflow:hidden;
+    }
+    .bar {
+      height:26px;
+      width:0%;
+      transition: width .2s ease;
+      border-radius: 0;
+    }
+    .bar.honmei {
+      background: linear-gradient(90deg, var(--gold1), var(--gold2));
+    }
+    .bar.total {
+      background: linear-gradient(90deg, rgba(45,212,191,.90), rgba(45,212,191,.25));
+    }
+
+    .bar-meta {
+      display:flex; justify-content:space-between; gap:10px;
+      margin-top:6px;
+      font-size:12px; color:rgba(255,255,255,.85);
+      font-variant-numeric: tabular-nums;
+    }
+    .bar-meta .mut { color:var(--muted); }
+
+    .muted {
+      color:var(--muted);
+      font-size:12px;
+      margin-top:8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div>
+      <h1>YOSOUKA Tipster Performance</h1>
+      <div class="meta">更新: 2026-02-07 09:42 / 参照日: 20260207</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="controls">
+      <span class="pill">ソート</span>
+      <button class="btn active" id="sortHonmei" data-key="honmei">本命ソート</button>
+      <button class="btn" id="sortTotal" data-key="total">合計ソート</button>
+    </div>
+
+    <div id="list" style="margin-top:10px;"></div>
+    <div class="muted">※ バーは選択モード（本命/合計）の的中率(%)に比例。バー内文字なし。</div>
+  </div>
+
+<script>
+const DATA_ORG = [{"name": "スミレ", "yid": "sumire", "h_n": 3, "h_hit": 3, "h_rate": 100.0, "o_n": 2, "o_hit": 0, "o_rate": 0.0, "t_n": 5, "t_hit": 3, "t_rate": 60.0}, {"name": "しーいち", "yid": "shiichi", "h_n": 2, "h_hit": 2, "h_rate": 100.0, "o_n": 0, "o_hit": 0, "o_rate": 0.0, "t_n": 2, "t_hit": 2, "t_rate": 100.0}, {"name": "複の神", "yid": "fukunokami", "h_n": 2, "h_hit": 2, "h_rate": 100.0, "o_n": 6, "o_hit": 1, "o_rate": 16.7, "t_n": 8, "t_hit": 3, "t_rate": 37.5}, {"name": "ブライアン梶田", "yid": "brian", "h_n": 1, "h_hit": 1, "h_rate": 100.0, "o_n": 0, "o_hit": 0, "o_rate": 0.0, "t_n": 1, "t_hit": 1, "t_rate": 100.0}, {"name": "タクスポ競馬", "yid": "takuspo", "h_n": 6, "h_hit": 3, "h_rate": 50.0, "o_n": 7, "o_hit": 1, "o_rate": 14.3, "t_n": 13, "t_hit": 4, "t_rate": 30.8}, {"name": "ドーベルちゃんねる", "yid": "dober", "h_n": 4, "h_hit": 2, "h_rate": 50.0, "o_n": 4, "o_hit": 1, "o_rate": 25.0, "t_n": 8, "t_hit": 3, "t_rate": 37.5}, {"name": "おびまつ", "yid": "hopes", "h_n": 4, "h_hit": 2, "h_rate": 50.0, "o_n": 5, "o_hit": 2, "o_rate": 40.0, "t_n": 9, "t_hit": 4, "t_rate": 44.4}, {"name": "サクラゴン", "yid": "sakuragon", "h_n": 2, "h_hit": 1, "h_rate": 50.0, "o_n": 0, "o_hit": 0, "o_rate": 0.0, "t_n": 2, "t_hit": 1, "t_rate": 50.0}, {"name": "ソフトさん", "yid": "softsan", "h_n": 2, "h_hit": 1, "h_rate": 50.0, "o_n": 6, "o_hit": 0, "o_rate": 0.0, "t_n": 8, "t_hit": 1, "t_rate": 12.5}, {"name": "リーファ", "yid": "rihua", "h_n": 2, "h_hit": 1, "h_rate": 50.0, "o_n": 0, "o_hit": 0, "o_rate": 0.0, "t_n": 2, "t_hit": 1, "t_rate": 50.0}, {"name": "ふくしくんれんちゃん", "yid": "tigerai", "h_n": 2, "h_hit": 1, "h_rate": 50.0, "o_n": 9, "o_hit": 1, "o_rate": 11.1, "t_n": 11, "t_hit": 2, "t_rate": 18.2}, {"name": "ビヨンド", "yid": "beyond", "h_n": 2, "h_hit": 1, "h_rate": 50.0, "o_n": 2, "o_hit": 1, "o_rate": 50.0, "t_n": 4, "t_hit": 2, "t_rate": 50.0}, {"name": "佐々木 主浩", "yid": "sasaki", "h_n": 5, "h_hit": 2, "h_rate": 40.0, "o_n": 0, "o_hit": 0, "o_rate": 0.0, "t_n": 5, "t_hit": 2, "t_rate": 40.0}, {"name": "うまけんch", "yid": "umaken", "h_n": 3, "h_hit": 1, "h_rate": 33.3, "o_n": 2, "o_hit": 1, "o_rate": 50.0, "t_n": 5, "t_hit": 2, "t_rate": 40.0}, {"name": "ヒデキナ競馬ch", "yid": "hidekina", "h_n": 7, "h_hit": 2, "h_rate": 28.6, "o_n": 13, "o_hit": 2, "o_rate": 15.4, "t_n": 20, "t_hit": 4, "t_rate": 20.0}, {"name": "かず厩舎", "yid": "kazukyusya", "h_n": 7, "h_hit": 2, "h_rate": 28.6, "o_n": 3, "o_hit": 0, "o_rate": 0.0, "t_n": 10, "t_hit": 2, "t_rate": 20.0}, {"name": "リュウタロウ", "yid": "ryutaro", "h_n": 4, "h_hit": 1, "h_rate": 25.0, "o_n": 3, "o_hit": 1, "o_rate": 33.3, "t_n": 7, "t_hit": 2, "t_rate": 28.6}, {"name": "競馬カバ", "yid": "keibakaba", "h_n": 4, "h_hit": 1, "h_rate": 25.0, "o_n": 1, "o_hit": 0, "o_rate": 0.0, "t_n": 5, "t_hit": 1, "t_rate": 20.0}, {"name": "きぃ", "yid": "kii", "h_n": 4, "h_hit": 1, "h_rate": 25.0, "o_n": 3, "o_hit": 0, "o_rate": 0.0, "t_n": 7, "t_hit": 1, "t_rate": 14.3}, {"name": "ハルカ", "yid": "haruka", "h_n": 5, "h_hit": 1, "h_rate": 20.0, "o_n": 0, "o_hit": 0, "o_rate": 0.0, "t_n": 5, "t_hit": 1, "t_rate": 20.0}, {"name": "ＨＡＧＡＮＥ", "yid": "hagane", "h_n": 12, "h_hit": 2, "h_rate": 16.7, "o_n": 0, "o_hit": 0, "o_rate": 0.0, "t_n": 12, "t_hit": 2, "t_rate": 16.7}, {"name": "やーしゅん", "yid": "yashun", "h_n": 9, "h_hit": 1, "h_rate": 11.1, "o_n": 8, "o_hit": 1, "o_rate": 12.5, "t_n": 17, "t_hit": 2, "t_rate": 11.8}, {"name": "メガちゃん", "yid": "megachan", "h_n": 5, "h_hit": 0, "h_rate": 0.0, "o_n": 8, "o_hit": 2, "o_rate": 25.0, "t_n": 13, "t_hit": 2, "t_rate": 15.4}, {"name": "ST.pull", "yid": "stpull", "h_n": 3, "h_hit": 0, "h_rate": 0.0, "o_n": 4, "o_hit": 0, "o_rate": 0.0, "t_n": 7, "t_hit": 0, "t_rate": 0.0}, {"name": "マンダケンタ", "yid": "manda", "h_n": 1, "h_hit": 0, "h_rate": 0.0, "o_n": 6, "o_hit": 1, "o_rate": 16.7, "t_n": 7, "t_hit": 1, "t_rate": 14.3}, {"name": "中崎", "yid": "nakazaki", "h_n": 1, "h_hit": 0, "h_rate": 0.0, "o_n": 0, "o_hit": 0, "o_rate": 0.0, "t_n": 1, "t_hit": 0, "t_rate": 0.0}, {"name": "マーキングマーキン", "yid": "markin", "h_n": 1, "h_hit": 0, "h_rate": 0.0, "o_n": 3, "o_hit": 0, "o_rate": 0.0, "t_n": 4, "t_hit": 0, "t_rate": 0.0}, {"name": "アナ５３", "yid": "ana53", "h_n": 0, "h_hit": 0, "h_rate": 0.0, "o_n": 7, "o_hit": 0, "o_rate": 0.0, "t_n": 7, "t_hit": 0, "t_rate": 0.0}, {"name": "オニキス029", "yid": "onyx", "h_n": 0, "h_hit": 0, "h_rate": 0.0, "o_n": 10, "o_hit": 3, "o_rate": 30.0, "t_n": 10, "t_hit": 3, "t_rate": 30.0}, {"name": "東信二", "yid": "azuma", "h_n": 0, "h_hit": 0, "h_rate": 0.0, "o_n": 5, "o_hit": 1, "o_rate": 20.0, "t_n": 5, "t_hit": 1, "t_rate": 20.0}, {"name": "山川レオ", "yid": "yamakawa", "h_n": 0, "h_hit": 0, "h_rate": 0.0, "o_n": 5, "o_hit": 2, "o_rate": 40.0, "t_n": 5, "t_hit": 2, "t_rate": 40.0}, {"name": "アナコンダ", "yid": "anaconda", "h_n": 0, "h_hit": 0, "h_rate": 0.0, "o_n": 12, "o_hit": 1, "o_rate": 8.3, "t_n": 12, "t_hit": 1, "t_rate": 8.3}, {"name": "富田", "yid": "tomita", "h_n": 0, "h_hit": 0, "h_rate": 0.0, "o_n": 5, "o_hit": 1, "o_rate": 20.0, "t_n": 5, "t_hit": 1, "t_rate": 20.0}, {"name": "穴ーキスト", "yid": "anarchist", "h_n": 0, "h_hit": 0, "h_rate": 0.0, "o_n": 1, "o_hit": 0, "o_rate": 0.0, "t_n": 1, "t_hit": 0, "t_rate": 0.0}];
+let modeKey = "honmei"; // honmei | total
+
+function pctClamp(v) {
+  if (isNaN(v)) return 0;
+  return Math.max(0, Math.min(100, v));
+}
+
+function setActive(btnId) {
+  ["sortHonmei", "sortTotal"].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.toggle("active", id === btnId);
+  });
+}
+
+function sortData(arr) {
+  const a = arr.slice();
+  a.sort((x, y) => {
+    if (modeKey === "honmei") {
+      const xr = Number(x.h_rate) || 0;
+      const yr = Number(y.h_rate) || 0;
+      if (yr !== xr) return yr - xr;
+      const xn = Number(x.h_n) || 0;
+      const yn = Number(y.h_n) || 0;
+      return yn - xn;
+    }
+    // total
+    const xr = Number(x.t_rate) || 0;
+    const yr = Number(y.t_rate) || 0;
+    if (yr !== xr) return yr - xr;
+    const xn = Number(x.t_n) || 0;
+    const yn = Number(y.t_n) || 0;
+    return yn - xn;
+  });
+  return a;
+}
+
+function render() {
+  const root = document.getElementById("list");
+  if (!DATA_ORG || DATA_ORG.length === 0) {
+    root.innerHTML = "<div class='muted'>データがありません（tipster_performance_all.csv を確認してください）。</div>";
+    return;
+  }
+
+  const DATA = sortData(DATA_ORG);
+
+  const html = DATA.map(d => {
+    const h_n = Number(d.h_n) || 0;
+    const h_hit = Number(d.h_hit) || 0;
+    const h_rate = Number(d.h_rate) || 0;
+
+    const t_n = Number(d.t_n) || 0;
+    const t_hit = Number(d.t_hit) || 0;
+    const t_rate = Number(d.t_rate) || 0;
+
+    const viewN = (modeKey === "honmei") ? h_n : t_n;
+    const viewHit = (modeKey === "honmei") ? h_hit : t_hit;
+    const viewRate = (modeKey === "honmei") ? h_rate : t_rate;
+
+    const viewLabel = (modeKey === "honmei") ? "本命" : "合計";
+    const wTotal = pctClamp(viewRate);
+
+    const barCls = (modeKey === "honmei") ? "bar honmei" : "bar total";
+
+    const title = `<div class="name">
+      <div style="display:flex; align-items:baseline; gap:8px; min-width:0;">
+        <div style="font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${d.name}</div>
+        <div style="font-size:11px; color:var(--muted); white-space:nowrap; font-variant-numeric: tabular-nums;">
+          （予想数 ${viewN}件　的中数 ${viewHit}件　的中率 ${Number(viewRate).toFixed(1)}％）
+        </div>
+      </div>
+      <div style="font-size:11px; color:var(--muted); font-variant-numeric: tabular-nums;">${viewLabel}</div>
+    </div>`;
+
+    return `<div class="row">
+      ${title}
+
+      <div class="barwrap">
+        <div class="${barCls}" style="width:${wTotal}%"></div>
+      </div>
+
+      <div class="bar-meta">
+        <div>${viewLabel}的中率 <b>${Number(viewRate).toFixed(1)}%</b></div>
+        <div class="mut">予想数 ${viewN} / 的中 ${viewHit}</div>
+      </div>
+    </div>`;
+  }).join("");
+
+  root.innerHTML = html;
+}
+
+document.getElementById("sortHonmei").addEventListener("click", () => {
+  modeKey = "honmei";
+  setActive("sortHonmei");
+  render();
+});
+document.getElementById("sortTotal").addEventListener("click", () => {
+  modeKey = "total";
+  setActive("sortTotal");
+  render();
+});
+
+setActive("sortHonmei");
+render();
+</script>
+</body>
+</html>
