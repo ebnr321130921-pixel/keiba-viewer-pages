@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>YOSOUKA Tipster Performance</title>
+  <style>
+:root {
+  --bg0:#0b0f14;
+  --card:#111821;
+  --line: rgba(255,255,255,0.10);
+  --text:#e8eef6;
+  --muted:#a9b4c0;
+
+  --pill:#121c27;
+  --teal:#2dd4bf;
+
+  --shadow1: 0 10px 30px rgba(0,0,0,.28);
+  --shadow2: 0 6px 16px rgba(0,0,0,.22);
+  --radius: 14px;
+
+  /* 金/銀 */
+  --gold1: rgba(255, 215, 0, .92);
+  --gold2: rgba(255, 215, 0, .26);
+  --silver1: rgba(192, 192, 192, .92);
+  --silver2: rgba(192, 192, 192, .22);
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin:0;
+  padding: calc(12px + env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom)) 12px;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;
+
+  /* ★ 全ページの基準文字＝ボタンと同じ */
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: .02em;
+
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  background:
+    radial-gradient(1200px 500px at 20% 0%, rgba(13,27,42,.95) 0%, rgba(11,15,20,.95) 55%),
+    radial-gradient(900px 500px at 90% 0%, rgba(255,215,0,.06) 0%, transparent 60%),
+    var(--bg0);
+  color:var(--text);
+}
+
+/* ★ 予想家成績/トップ3カード等も含め、全テキストを同一に寄せる */
+body * {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  letter-spacing: inherit !important;
+}
+
+.topbar,
+.card {
+  max-width: 760px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* ===== WIN5寄せ: sticky topbar ===== */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: linear-gradient(180deg, rgba(11,15,20,.98), rgba(11,15,20,.86));
+  backdrop-filter: blur(12px);
+  border:1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px;
+  box-shadow: var(--shadow2);
+  margin-bottom: 12px;
+}
+
+.topbar .row {
+  margin-top: 10px;
+  display:flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items:center;
+}
+
+.h1 {
+  font-size: inherit;
+  margin: 0;
+  letter-spacing: inherit;
+  font-weight: inherit;
+}
+
+.top {
+  display:flex;
+  gap:10px;
+  align-items:flex-end;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+
+h1 {
+  font-size: inherit;
+  margin: 0;
+  letter-spacing: inherit;
+  font-weight: inherit;
+}
+
+.meta {
+  font-size: inherit;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.01));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px;
+  box-shadow: var(--shadow1);
+}
+
+.controls {
+  display:flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items:center;
+}
+
+/* pill は“非操作(黒)”をデフォルトにする */
+.pill {
+  background: rgba(0,0,0,0.32);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(232,238,246,0.86);
+  border-radius: 999px;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: inherit;
+  margin-top: 8px;
+  line-height: 1;
+}
+
+
+/* 操作できるもの（select/btn）はネイビーに統一 */
+select.pill,
+.btn {
+  background: linear-gradient(180deg, rgba(34,56,130,0.78), rgba(20,34,88,0.72));
+  border: 1px solid rgba(105,150,245,0.45);
+  color: rgba(242,247,255,0.96);
+  box-shadow: 0 10px 26px rgba(0,0,0,.22);
+  transition: filter .15s ease, transform .08s ease, border-color .15s ease;
+}
+
+select.pill {
+  -webkit-appearance: none;
+  appearance: none;
+
+  border-radius: 12px; /* ★ WIN5寄せ（少し丸め） */
+
+  /* 右側に矢印スペースを確保 */
+  padding: 10px 38px 10px 14px;
+
+  /* ★ WIN5の見た目に近いサイズ感 */
+  min-width: 120px;
+  max-width: 100%;
+  min-height: 38px;
+  outline: none;
+
+  /* 矢印（他UIと同系色） */
+  background-image:
+    linear-gradient(180deg, rgba(34,56,130,0.78), rgba(20,34,88,0.72)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 20 20'%3E%3Cpath fill='%23D9E6FF' d='M5.6 7.6a1 1 0 0 1 1.4 0L10 10.6l3-3a1 1 0 1 1 1.4 1.4l-3.7 3.7a1 1 0 0 1-1.4 0L5.6 9a1 1 0 0 1 0-1.4z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat, no-repeat;
+  background-position: 0 0, right 12px center;
+  background-size: 100% 100%, 18px 18px;
+}
+
+select.pill:focus-visible {
+  outline: 2px solid rgba(45,212,191,.22);
+  outline-offset: 2px;
+}
+
+/* ★ プルダウン候補（ブラウザ対応範囲で）を他UIのダーク寄せ */
+select.pill option {
+  /* ★ WIN5のドロップダウン（ネイビー）寄せ */
+  background: rgba(34,56,130,0.92);
+  color: rgba(242,247,255,0.96);
+}
+
+/* ★ 選択中の行（対応ブラウザのみ） */
+select.pill option:checked {
+  background: rgba(20,34,88,0.92);
+}
+
+.btn {
+  cursor: pointer;
+  user-select: none;
+
+  /* pillと同じ見た目 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 8px; /* ←ボタンもさらに四角めに */
+  padding: 10px 12px;
+  min-height: 38px; /* ★ select と高さ統一 */
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.btn:hover {
+  filter: brightness(1.06);
+  border-color: rgba(105,150,245,0.60);
+}
+
+.btn:active {
+  transform: scale(0.99);
+}
+
+.btn:focus-visible {
+  outline: 2px solid rgba(45,212,191,.22);
+  outline-offset: 2px;
+}
+
+.btn.active {
+  outline: 2px solid rgba(255,215,0,.18);
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 8px;
+  line-height: 1.55;
+}
+    .controls {
+      margin-top:8px;
+    }
+    .trow {
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:6px;
+      padding:10px 0;
+      border-bottom:1px solid rgba(31,42,54,.7);
+    }
+    .trow:last-child { border-bottom:none; }
+
+
+    .name {
+      display:flex; align-items:baseline; justify-content:space-between; gap:10px;
+      font-size:13px;
+    }
+    .stats {
+      margin-top:2px;
+      font-size:11px;
+      color:var(--muted);
+      line-height:1.55;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ★ バー上の文言をカード化 */
+    .statcard {
+      border:1px solid rgba(31,42,54,.9);
+      border-radius:14px;
+      padding:10px;
+      background: rgba(255,255,255,.02);
+      box-shadow: 0 8px 22px rgba(0,0,0,.18);
+    }
+    .is-hidden {
+      display:none !important;
+    }
+
+    .barwrap {
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(31,42,54,.9);
+      border-radius:12px;
+      overflow:hidden;
+    }
+    /* バーは「的中率」で幅。中は予想比率で2色に分割 */
+    .bar {
+      height:26px;
+      width:0%;
+      display:flex;
+      transition: width .2s ease;
+      border-radius: 0;
+    }
+    .seg {
+      height:100%;
+    }
+    .seg.honmei {
+      background: linear-gradient(90deg, var(--gold1), var(--gold2));
+    }
+    .seg.otakara {
+      background: linear-gradient(90deg, var(--silver1), var(--silver2));
+    }
+
+    .bar-meta {
+      display:flex; justify-content:space-between; gap:10px;
+      margin-top:6px;
+      font-size:12px; color:rgba(255,255,255,.85);
+      font-variant-numeric: tabular-nums;
+    }
+    .bar-meta .mut { color:var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div>
+      <h1 class="h1">YOSOUKA Tipster Performance</h1>
+      <div class="row">
+        <a class="btn" href="index.html#date=20260222">Topへ戻る</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="controls">
+      <select id="sortSelect" class="pill">
+        <option value="honmei">本命</option>
+        <option value="total">合計</option>
+      </select>
+
+      <!-- ★ 一括表示/非表示 -->
+      <button id="toggleStatsBtn" class="btn" type="button">詳細を非表示</button>
+
+      <span class="pill">更新: 2026-02-21 17:00</span>
+    </div>
+
+    <div id="list" style="margin-top:10px;"></div>
+    <div class="muted">※ バーは選択モード（本命/合計）の的中率(%)に比例。バー内文字なし。</div>
+  </div>
+
+<script>
+const DATA_ORG = [{"name": "しーいち", "yid": "shiichi", "h_n": 3, "h_hit": 3, "h_rate": 100.0, "o_n": 0, "o_hit": 0, "o_rate": 0.0, "t_n": 3, "t_hit": 3, "t_rate": 100.0}, {"name": "オニキス029", "yid": "onyx", "h_n": 2, "h_hit": 2, "h_rate": 100.0, "o_n": 22, "o_hit": 9, "o_rate": 40.9, "t_n": 24, "t_hit": 11, "t_rate": 45.8}, {"name": "スミレ", "yid": "sumire", "h_n": 5, "h_hit": 4, "h_rate": 80.0, "o_n": 3, "o_hit": 0, "o_rate": 0.0, "t_n": 8, "t_hit": 4, "t_rate": 50.0}, {"name": "マンダケンタ", "yid": "manda", "h_n": 3, "h_hit": 2, "h_rate": 66.7, "o_n": 10, "o_hit": 2, "o_rate": 20.0, "t_n": 13, "t_hit": 4, "t_rate": 30.8}, {"name": "リーファ", "yid": "rihua", "h_n": 3, "h_hit": 2, "h_rate": 66.7, "o_n": 0, "o_hit": 0, "o_rate": 0.0, "t_n": 3, "t_hit": 2, "t_rate": 66.7}, {"name": "複の神", "yid": "fukunokami", "h_n": 3, "h_hit": 2, "h_rate": 66.7, "o_n": 23, "o_hit": 9, "o_rate": 39.1, "t_n": 26, "t_hit": 11, "t_rate": 42.3}, {"name": "タクスポ競馬", "yid": "takuspo", "h_n": 10, "h_hit": 6, "h_rate": 60.0, "o_n": 14, "o_hit": 2, "o_rate": 14.3, "t_n": 24, "t_hit": 8, "t_rate": 33.3}, {"name": "リュウタロウ", "yid": "ryutaro", "h_n": 9, "h_hit": 5, "h_rate": 55.6, "o_n": 8, "o_hit": 1, "o_rate": 12.5, "t_n": 17, "t_hit": 6, "t_rate": 35.3}, {"name": "佐々木 主浩", "yid": "sasaki", "h_n": 8, "h_hit": 4, "h_rate": 50.0, "o_n": 0, "o_hit": 0, "o_rate": 0.0, "t_n": 8, "t_hit": 4, "t_rate": 50.0}, {"name": "ふくしくんれんちゃん", "yid": "tigerai", "h_n": 4, "h_hit": 2, "h_rate": 50.0, "o_n": 11, "o_hit": 2, "o_rate": 18.2, "t_n": 15, "t_hit": 4, "t_rate": 26.7}, {"name": "ビヨンド", "yid": "beyond", "h_n": 4, "h_hit": 2, "h_rate": 50.0, "o_n": 4, "o_hit": 1, "o_rate": 25.0, "t_n": 8, "t_hit": 3, "t_rate": 37.5}, {"name": "ソフトさん", "yid": "softsan", "h_n": 2, "h_hit": 1, "h_rate": 50.0, "o_n": 9, "o_hit": 1, "o_rate": 11.1, "t_n": 11, "t_hit": 2, "t_rate": 18.2}, {"name": "ブライアン梶田", "yid": "brian", "h_n": 2, "h_hit": 1, "h_rate": 50.0, "o_n": 0, "o_hit": 0, "o_rate": 0.0, "t_n": 2, "t_hit": 1, "t_rate": 50.0}, {"name": "きぃ", "yid": "kii", "h_n": 5, "h_hit": 2, "h_rate": 40.0, "o_n": 6, "o_hit": 1, "o_rate": 16.7, "t_n": 11, "t_hit": 3, "t_rate": 27.3}, {"name": "ヒデキナ競馬ch", "yid": "hidekina", "h_n": 16, "h_hit": 6, "h_rate": 37.5, "o_n": 25, "o_hit": 3, "o_rate": 12.0, "t_n": 41, "t_hit": 9, "t_rate": 22.0}, {"name": "やーしゅん", "yid": "yashun", "h_n": 18, "h_hit": 6, "h_rate": 33.3, "o_n": 17, "o_hit": 3, "o_rate": 17.6, "t_n": 35, "t_hit": 9, "t_rate": 25.7}, {"name": "ドーベルちゃんねる", "yid": "dober", "h_n": 9, "h_hit": 3, "h_rate": 33.3, "o_n": 7, "o_hit": 2, "o_rate": 28.6, "t_n": 16, "t_hit": 5, "t_rate": 31.2}, {"name": "おびまつ", "yid": "hopes", "h_n": 6, "h_hit": 2, "h_rate": 33.3, "o_n": 10, "o_hit": 3, "o_rate": 30.0, "t_n": 16, "t_hit": 5, "t_rate": 31.2}, {"name": "サクラゴン", "yid": "sakuragon", "h_n": 3, "h_hit": 1, "h_rate": 33.3, "o_n": 0, "o_hit": 0, "o_rate": 0.0, "t_n": 3, "t_hit": 1, "t_rate": 33.3}, {"name": "山川レオ", "yid": "yamakawa", "h_n": 3, "h_hit": 1, "h_rate": 33.3, "o_n": 8, "o_hit": 2, "o_rate": 25.0, "t_n": 11, "t_hit": 3, "t_rate": 27.3}, {"name": "山田乗男", "yid": "norio", "h_n": 3, "h_hit": 1, "h_rate": 33.3, "o_n": 3, "o_hit": 0, "o_rate": 0.0, "t_n": 6, "t_hit": 1, "t_rate": 16.7}, {"name": "かず厩舎", "yid": "kazukyusya", "h_n": 11, "h_hit": 3, "h_rate": 27.3, "o_n": 7, "o_hit": 0, "o_rate": 0.0, "t_n": 18, "t_hit": 3, "t_rate": 16.7}, {"name": "ST.pull", "yid": "stpull", "h_n": 8, "h_hit": 2, "h_rate": 25.0, "o_n": 4, "o_hit": 0, "o_rate": 0.0, "t_n": 12, "t_hit": 2, "t_rate": 16.7}, {"name": "ＨＡＧＡＮＥ", "yid": "hagane", "h_n": 25, "h_hit": 6, "h_rate": 24.0, "o_n": 0, "o_hit": 0, "o_rate": 0.0, "t_n": 25, "t_hit": 6, "t_rate": 24.0}, {"name": "メガちゃん", "yid": "megachan", "h_n": 13, "h_hit": 3, "h_rate": 23.1, "o_n": 15, "o_hit": 3, "o_rate": 20.0, "t_n": 28, "t_hit": 6, "t_rate": 21.4}, {"name": "うまけんch", "yid": "umaken", "h_n": 5, "h_hit": 1, "h_rate": 20.0, "o_n": 5, "o_hit": 1, "o_rate": 20.0, "t_n": 10, "t_hit": 2, "t_rate": 20.0}, {"name": "ハルカ", "yid": "haruka", "h_n": 11, "h_hit": 2, "h_rate": 18.2, "o_n": 1, "o_hit": 0, "o_rate": 0.0, "t_n": 12, "t_hit": 2, "t_rate": 16.7}, {"name": "競馬カバ", "yid": "keibakaba", "h_n": 8, "h_hit": 1, "h_rate": 12.5, "o_n": 1, "o_hit": 0, "o_rate": 0.0, "t_n": 9, "t_hit": 1, "t_rate": 11.1}, {"name": "中崎", "yid": "nakazaki", "h_n": 1, "h_hit": 0, "h_rate": 0.0, "o_n": 0, "o_hit": 0, "o_rate": 0.0, "t_n": 1, "t_hit": 0, "t_rate": 0.0}, {"name": "アナ５３", "yid": "ana53", "h_n": 0, "h_hit": 0, "h_rate": 0.0, "o_n": 15, "o_hit": 1, "o_rate": 6.7, "t_n": 15, "t_hit": 1, "t_rate": 6.7}, {"name": "東信二", "yid": "azuma", "h_n": 0, "h_hit": 0, "h_rate": 0.0, "o_n": 10, "o_hit": 3, "o_rate": 30.0, "t_n": 10, "t_hit": 3, "t_rate": 30.0}, {"name": "アナコンダ", "yid": "anaconda", "h_n": 0, "h_hit": 0, "h_rate": 0.0, "o_n": 25, "o_hit": 5, "o_rate": 20.0, "t_n": 25, "t_hit": 5, "t_rate": 20.0}, {"name": "富田", "yid": "tomita", "h_n": 0, "h_hit": 0, "h_rate": 0.0, "o_n": 11, "o_hit": 3, "o_rate": 27.3, "t_n": 11, "t_hit": 3, "t_rate": 27.3}, {"name": "穴ーキスト", "yid": "anarchist", "h_n": 0, "h_hit": 0, "h_rate": 0.0, "o_n": 4, "o_hit": 0, "o_rate": 0.0, "t_n": 4, "t_hit": 0, "t_rate": 0.0}, {"name": "マーキングマーキン", "yid": "markin", "h_n": 0, "h_hit": 0, "h_rate": 0.0, "o_n": 2, "o_hit": 0, "o_rate": 0.0, "t_n": 2, "t_hit": 0, "t_rate": 0.0}];
+let modeKey = "honmei"; // honmei | total
+
+// ★ バー上の詳細（本命/お宝/合計）を一括表示/非表示
+let showStats = true;
+
+function pctClamp(v) {
+  if (isNaN(v)) return 0;
+  return Math.max(0, Math.min(100, v));
+}
+
+function applyStatsVisibility() {
+  const btn = document.getElementById("toggleStatsBtn");
+  document.querySelectorAll(".statcard").forEach(el => {
+    el.classList.toggle("is-hidden", !showStats);
+  });
+  if (btn) btn.textContent = showStats ? "詳細を非表示" : "詳細を表示";
+}
+
+function sortData(arr) {
+  const a = arr.slice();
+  a.sort((x, y) => {
+    if (modeKey === "honmei") {
+      const xr = Number(x.h_rate) || 0;
+      const yr = Number(y.h_rate) || 0;
+      if (yr !== xr) return yr - xr;
+      const xn = Number(x.h_n) || 0;
+      const yn = Number(y.h_n) || 0;
+      return yn - xn;
+    }
+    // total
+    const xr = Number(x.t_rate) || 0;
+    const yr = Number(y.t_rate) || 0;
+    if (yr !== xr) return yr - xr;
+    const xn = Number(x.t_n) || 0;
+    const yn = Number(y.t_n) || 0;
+    return yn - xn;
+  });
+  return a;
+}
+
+function render() {
+  const root = document.getElementById("list");
+  if (!DATA_ORG || DATA_ORG.length === 0) {
+    root.innerHTML = "<div class='muted'>データがありません（tipster_performance_all.csv を確認してください）。</div>";
+    return;
+  }
+
+  const DATA = sortData(DATA_ORG);
+
+  const html = DATA.map(d => {
+    const h_n = Number(d.h_n) || 0;
+    const h_hit = Number(d.h_hit) || 0;
+    const h_rate = Number(d.h_rate) || 0;
+
+    const o_n = Number(d.o_n) || 0;
+    const o_hit = Number(d.o_hit) || 0;
+    const o_rate = Number(d.o_rate) || 0;
+
+    const t_n = Number(d.t_n) || 0;
+    const t_hit = Number(d.t_hit) || 0;
+    const t_rate = Number(d.t_rate) || 0;
+
+    const viewN = (modeKey === "honmei") ? h_n : t_n;
+    const viewHit = (modeKey === "honmei") ? h_hit : t_hit;
+    const viewRate = (modeKey === "honmei") ? h_rate : t_rate;
+
+    const wTotal = pctClamp(viewRate);
+
+    // バー内の分割（予想比率：本命/お宝）
+    const segHonmei = (t_n > 0) ? pctClamp((h_n / t_n) * 100) : 0;
+    const segOtakara = (t_n > 0) ? pctClamp((o_n / t_n) * 100) : 0;
+
+    const stats3 = `
+      <div class="statcard${showStats ? "" : " is-hidden"}">
+        <div class="stats">
+          <div>本命：予想 ${h_n}　的中 ${h_hit}　的中率 ${Number(h_rate).toFixed(1)}%</div>
+          <div>お宝：予想 ${o_n}　的中 ${o_hit}　的中率 ${Number(o_rate).toFixed(1)}%</div>
+          <div>合計：予想 ${t_n}　的中 ${t_hit}　的中率 ${Number(t_rate).toFixed(1)}%</div>
+        </div>
+      </div>
+    `;
+
+    const modeChip = (modeKey === "honmei")
+      ? `<span class="pill" style="padding:6px 10px; font-weight:900;">本命ソート</span>`
+      : `<span class="pill" style="padding:6px 10px; font-weight:900;">合計ソート</span>`;
+
+    const title = `
+      <div class="name">
+        <div style="min-width:0; display:flex; align-items:center; gap:10px;">
+          <div style="font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${d.name}</div>
+          <div style="flex:1;"></div>
+          ${modeChip}
+        </div>
+      </div>
+      ${stats3}
+    `;
+
+    return `<div class="trow">
+      ${title}
+
+      <div class="barwrap">
+        <div class="bar" style="width:${wTotal}%">
+          <div class="seg honmei" style="width:${segHonmei}%"></div>
+          <div class="seg otakara" style="width:${segOtakara}%"></div>
+        </div>
+      </div>
+
+      <div class="bar-meta">
+        <div>表示中の的中率 <b>${Number(viewRate).toFixed(1)}%</b></div>
+        <div class="mut">予想数 ${viewN} / 的中 ${viewHit}</div>
+      </div>
+    </div>`;
+
+  }).join("");
+
+  root.innerHTML = html;
+}
+
+const sortSelect = document.getElementById("sortSelect");
+if (sortSelect) {
+  sortSelect.value = modeKey;
+  sortSelect.addEventListener("change", () => {
+    modeKey = sortSelect.value === "total" ? "total" : "honmei";
+    render();
+    applyStatsVisibility();
+  });
+}
+
+const toggleStatsBtn = document.getElementById("toggleStatsBtn");
+if (toggleStatsBtn) {
+  toggleStatsBtn.addEventListener("click", () => {
+    showStats = !showStats;
+    applyStatsVisibility();
+  });
+}
+
+render();
+applyStatsVisibility();
+</script>
+</body>
+</html>
