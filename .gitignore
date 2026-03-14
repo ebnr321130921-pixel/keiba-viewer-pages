@@ -21,3 +21,22 @@ umanity_html/
 
 # ===== local state / secrets-ish =====
 umanity_storage_state.json
+
+# ===== local scripts / artifacts (repoに入れない運用なら無視) =====
+github_auto_push.py
+Kaime.py
+Keiba_Sim.py
+Validation.py
+Viwer_EDIT.py
+keiba_predict_tool.py
+merge_merged_to_master.py
+umanity_collect_daily_uindex_and_results.py
+win5_builder.py
+win5_html_generator.py
+yosouka_prediction_results.html
+yosouka_tipster_performance.html
+master_merged_analysis.csv
+patterns_template.csv
+umanity_login.csv
+BAKEN/
+NORIKAE/
