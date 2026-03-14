@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="manifest" href="manifest.json?v=20260315015418" />
+<link rel="manifest" href="manifest.json?v=20260315015655" />
 <title>Keiba Top</title>
 
 <style>
@@ -1177,12 +1177,27 @@ function init() {
 }
 
 init();
+
+// ★ Top画面に戻ってきた時、iPhone/PWAの復元表示でも必ず最新化する
+window.addEventListener("pageshow", (e) => {
+  const nav = (performance && performance.getEntriesByType)
+    ? performance.getEntriesByType("navigation")
+    : [];
+  const navType = (nav && nav[0] && nav[0].type) ? nav[0].type : "";
+
+  if (e.persisted || navType === "back_forward") {
+    const d = el("dateSel") ? el("dateSel").value : "";
+    const v = Date.now();
+    const h = d ? ("#date=" + encodeURIComponent(d)) : "";
+    location.replace("index.html?v=" + v + h);
+  }
+});
 </script>
 
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js?v=20260315015418").catch(() => {});
+    navigator.serviceWorker.register("sw.js?v=20260315015655").catch(() => {});
   });
 }
 </script>

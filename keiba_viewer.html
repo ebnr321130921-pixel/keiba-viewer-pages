@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="manifest" href="manifest.json?v=20260315015418" />
+<link rel="manifest" href="manifest.json?v=20260315015655" />
 <title>出馬表ビューア</title>
 
 <style>
@@ -3553,7 +3553,8 @@ function initFromHashOrDefault() {
   if (back) {
     back.addEventListener("click", () => {
       const d2 = el("dateSel").value;
-      location.href = "index.html#date=" + encodeURIComponent(d2);
+      const v = Date.now();
+      location.href = "index.html?v=" + v + "#date=" + encodeURIComponent(d2);
     });
   }
 
@@ -3662,7 +3663,7 @@ if (shouldForceTopRedirect()) {
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js?v=20260315015418").catch(() => {});
+    navigator.serviceWorker.register("sw.js?v=20260315015655").catch(() => {});
   });
 }
 </script>
