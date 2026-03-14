@@ -1,2 +1,23 @@
 .DS_Store
 **/.DS_Store
+
+# ===== Python =====
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ===== local caches =====
+.analysis_cache*.pkl
+.analysis_cache*.json
+.master_cache*.pkl
+.master_cache*.json
+
+# ===== outputs / generated =====
+Output_keiba_predict/
+Output_keiba_tables/
+Output_roi/
+umanity_html/
+
+# ===== local state / secrets-ish =====
+umanity_storage_state.json
