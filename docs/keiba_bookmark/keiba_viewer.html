@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="manifest" href="manifest.json?v=20260321170514" />
+<link rel="manifest" href="manifest.json?v=20260321170712" />
 <title>出馬表ビューア</title>
 
 <style>
@@ -157,14 +157,15 @@ body.hot-hit-silver .hit-glow.silver {
 .updatebar {
   width: 100%;
   min-height: 40px;
-  padding: 0 12px;
-  display: flex;
+  padding: 10px 12px;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(0,0,0,0.62);
-  color: #e9edf5;
-  font-weight: 900;
+  border: 1px solid var(--navy-border);
+  background: var(--navy);
+  color: var(--navy-text);
+  font-weight: 1000;
   font-size: 12px;
   white-space: nowrap;
   overflow: hidden;
@@ -3691,7 +3692,7 @@ if (shouldForceTopRedirect()) {
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js?v=20260321170514").catch(() => {});
+    navigator.serviceWorker.register("sw.js?v=20260321170712").catch(() => {});
   });
 }
 </script>
