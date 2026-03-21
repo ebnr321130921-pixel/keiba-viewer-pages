@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="manifest" href="manifest.json?v=20260321201420" />
+<link rel="manifest" href="manifest.json?v=20260321202706" />
 <title>Keiba Top</title>
 
 <style>
@@ -1358,24 +1358,53 @@ function openResultsModal(date) {
       const hd = (info && info.hit_detail) ? info.hit_detail : null;
       const payouts = (info && info.payouts) ? info.payouts : null;
 
+      const formatPayout = (raw) => {
+        const s = String(raw || "").trim();
+        if (!s) return "—";
+
+        const parts = s.split(";").map(x => String(x || "").trim()).filter(Boolean);
+        const out = parts.map((part) => {
+          const digits = String(part).replace(/[^0-9]/g, "");
+          if (!digits) return escapeHtml(part);
+          return Number(digits).toLocaleString("ja-JP") + "円";
+        });
+
+        return out.join(" / ");
+      };
+
+      const payoutCard = (label, value, accent) => {
+        return (
+          '<div style="' +
+            'border:1px solid ' + accent + ';' +
+            'background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));' +
+            'border-radius:14px;' +
+            'padding:12px 12px 10px 12px;' +
+            'box-shadow:0 8px 22px rgba(0,0,0,0.22);' +
+          '">' +
+            '<div style="font-size:12px; font-weight:1000; color:var(--muted); letter-spacing:0.04em; margin-bottom:6px;">' + label + '</div>' +
+            '<div style="font-size:22px; line-height:1.15; font-weight:1000; color:#ffffff; text-shadow:0 0 12px rgba(255,255,255,0.10);">' + formatPayout(value) + '</div>' +
+          '</div>'
+        );
+      };
+
       const hasPayouts = !!(
         payouts &&
         (
           payouts["払戻_単勝"] ||
-          payouts["払戻_複勝"] ||
           payouts["払戻_枠連"] ||
           payouts["払戻_馬連"] ||
-          payouts["払戻_ワイド"] ||
           payouts["払戻_馬単"] ||
           payouts["払戻_3連複"] ||
           payouts["払戻_3連単"]
         )
       );
 
+      let partsHtml = "";
+
       if (hd && (hd["パターン名称"] || hd["払戻金"] || hd["費用"])) {
-        detail.innerHTML =
+        partsHtml +=
           '<div style="font-size:14px; font-weight:1000; margin-bottom:8px;">的中詳細</div>' +
-          '<div style="display:grid; grid-template-columns:96px 1fr; gap:8px 12px; font-size:13px; line-height:1.5;">' +
+          '<div style="display:grid; grid-template-columns:96px 1fr; gap:8px 12px; font-size:13px; line-height:1.55; margin-bottom:12px;">' +
             '<div style="color:var(--muted); font-weight:900;">パターン</div><div>' + escapeHtml(hd["パターン名称"] || "—") + '</div>' +
             '<div style="color:var(--muted); font-weight:900;">馬券</div><div>' + escapeHtml(hd["馬券"] || "—") + '</div>' +
             '<div style="color:var(--muted); font-weight:900;">1着</div><div>' + escapeHtml(hd["1着"] || "—") + '</div>' +
@@ -1384,19 +1413,23 @@ function openResultsModal(date) {
             '<div style="color:var(--muted); font-weight:900;">費用</div><div>' + escapeHtml(hd["費用"] || "—") + '</div>' +
             '<div style="color:var(--muted); font-weight:900;">的中金額</div><div style="font-weight:1000; color:#ffd34d;">' + escapeHtml(hd["払戻金"] || "—") + '</div>' +
           '</div>';
-      } else if (hasPayouts) {
-        detail.innerHTML =
-          '<div style="font-size:14px; font-weight:1000; margin-bottom:8px;">払戻詳細</div>' +
-          '<div style="display:grid; grid-template-columns:96px 1fr; gap:8px 12px; font-size:13px; line-height:1.5;">' +
-            '<div style="color:var(--muted); font-weight:900;">単勝</div><div>' + escapeHtml(payouts["払戻_単勝"] || "—") + '</div>' +
-            '<div style="color:var(--muted); font-weight:900;">複勝</div><div>' + escapeHtml(payouts["払戻_複勝"] || "—") + '</div>' +
-            '<div style="color:var(--muted); font-weight:900;">枠連</div><div>' + escapeHtml(payouts["払戻_枠連"] || "—") + '</div>' +
-            '<div style="color:var(--muted); font-weight:900;">馬連</div><div>' + escapeHtml(payouts["払戻_馬連"] || "—") + '</div>' +
-            '<div style="color:var(--muted); font-weight:900;">ワイド</div><div>' + escapeHtml(payouts["払戻_ワイド"] || "—") + '</div>' +
-            '<div style="color:var(--muted); font-weight:900;">馬単</div><div>' + escapeHtml(payouts["払戻_馬単"] || "—") + '</div>' +
-            '<div style="color:var(--muted); font-weight:900;">3連複</div><div>' + escapeHtml(payouts["払戻_3連複"] || "—") + '</div>' +
-            '<div style="color:var(--muted); font-weight:900;">3連単</div><div style="font-weight:1000; color:#ffd34d;">' + escapeHtml(payouts["払戻_3連単"] || "—") + '</div>' +
+      }
+
+      if (hasPayouts) {
+        partsHtml +=
+          '<div style="font-size:14px; font-weight:1000; margin-bottom:8px;">払戻</div>' +
+          '<div style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px;">' +
+            payoutCard("単勝", payouts["払戻_単勝"], "rgba(120,170,255,0.34)") +
+            payoutCard("枠連", payouts["払戻_枠連"], "rgba(150,210,255,0.28)") +
+            payoutCard("馬連", payouts["払戻_馬連"], "rgba(255,211,77,0.42)") +
+            payoutCard("馬単", payouts["払戻_馬単"], "rgba(255,170,120,0.38)") +
+            payoutCard("3連複", payouts["払戻_3連複"], "rgba(170,150,255,0.38)") +
+            payoutCard("3連単", payouts["払戻_3連単"], "rgba(255,120,160,0.42)") +
           '</div>';
+      }
+
+      if (partsHtml !== "") {
+        detail.innerHTML = partsHtml;
       } else {
         detail.innerHTML =
           '<div style="font-size:14px; font-weight:1000; margin-bottom:6px;">的中詳細</div>' +
@@ -1821,7 +1854,7 @@ window.addEventListener("pageshow", (e) => {
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js?v=20260321201420").catch(() => {});
+    navigator.serviceWorker.register("sw.js?v=20260321202706").catch(() => {});
   });
 }
 </script>
