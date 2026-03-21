@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="manifest" href="manifest.json?v=20260321165229" />
+<link rel="manifest" href="manifest.json?v=20260321165440" />
 <title>Keiba Top</title>
 
 <style>
@@ -290,7 +290,7 @@ body.hot-hit-silver .hit-glow.silver {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  align-items: baseline;
+  align-items: center;
   margin-bottom: 10px;
 }
 .results-raceno {
@@ -302,6 +302,40 @@ body.hot-hit-silver .hit-glow.silver {
   font-size: 14px;
   color: var(--text);
 }
+.results-racepills {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.results-racepill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  font-size: 12px;
+  font-weight: 1000;
+  line-height: 1;
+  white-space: nowrap;
+}
+.results-racepill.baba-turf {
+  background: rgba(0, 160, 70, 0.44);
+  color: #f3fff5;
+  border-color: rgba(0,160,70,0.70);
+}
+.results-racepill.baba-dirt {
+  background: rgba(140, 85, 55, 0.48);
+  color: #fff5ef;
+  border-color: rgba(140,85,55,0.72);
+}
+.results-racepill.baba-jump {
+  background: rgba(0, 145, 165, 0.46);
+  color: #effdff;
+  border-color: rgba(0,145,165,0.72);
+}
 .results-meta {
   font-size: 12px;
   font-weight: 900;
@@ -310,14 +344,18 @@ body.hot-hit-silver .hit-glow.silver {
 .results-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 .results-table th,
 .results-table td {
+  width: 14.2857%;
   padding: 8px 10px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
   text-align: center;
   font-size: 13px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .results-table th {
   background: rgba(255,255,255,0.06);
@@ -329,7 +367,18 @@ body.hot-hit-silver .hit-glow.silver {
 }
 .results-table td.umaban {
   font-weight: 1000;
+}
+.results-umabadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
   border-radius: 10px;
+  font-weight: 1000;
+  font-size: 16px;
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset;
 }
 .results-empty {
   padding: 14px;
@@ -829,6 +878,14 @@ function rankClass(v) {
   return "";
 }
 
+function babaChipClass(v) {
+  const s = String(v || "");
+  if (s.includes("ダ") || s.includes("ダート")) return "baba-dirt";
+  if (s.includes("芝")) return "baba-turf";
+  if (s.includes("障") || s.includes("障害")) return "baba-jump";
+  return "";
+}
+
 function parseHash() {
   const h = (location.hash || "").replace(/^#/, "");
   const obj = {};
@@ -1064,10 +1121,21 @@ function openResultsModal(date) {
       box.className = "results-race";
 
       const st = (info.race_info && info.race_info["発走時刻"]) ? info.race_info["発走時刻"] : "";
+      const baba = (info.race_info && info.race_info["馬場"]) ? String(info.race_info["馬場"]) : "";
+      const kyori = (info.race_info && info.race_info["距離(m)"]) ? String(info.race_info["距離(m)"]) : "";
+      const babaCls = babaChipClass(baba);
+
+      const racePillsHtml =
+        '<div class="results-racepills">' +
+          (baba ? ('<span class="results-racepill ' + escapeHtml(babaCls) + '">' + escapeHtml(baba) + '</span>') : "") +
+          (kyori ? ('<span class="results-racepill">' + escapeHtml(kyori) + '</span>') : "") +
+        '</div>';
+
       box.innerHTML =
         '<div class="results-racehead">' +
           '<div class="results-raceno">' + escapeHtml(track) + " " + escapeHtml(raceNoLabel(r)) + '</div>' +
           '<div class="results-racename">' + escapeHtml(info.race_name || "（レース名なし）") + '</div>' +
+          racePillsHtml +
           '<div class="results-meta">' + escapeHtml(st || "") + '</div>' +
         '</div>';
 
@@ -1090,7 +1158,7 @@ function openResultsModal(date) {
         const tr = document.createElement("tr");
 
         const wakuNo = String(row["__枠番"] || "").trim();
-        const umabanClass = wakuNo ? (' class="' + escapeHtml("umaban " + wakuClass(wakuNo)) + '"') : ' class="umaban"';
+        const wc = wakuClass(wakuNo);
 
         const tags = [];
         if (String(row["__sugouma"] || "").trim()) {
@@ -1105,7 +1173,7 @@ function openResultsModal(date) {
           "<td>" + escapeHtml(row["予想印"] || "") + "</td>" +
           "<td>" + escapeHtml(row["人気"] || "") + "</td>" +
           "<td>" + escapeHtml(row["オッズ"] || "") + "</td>" +
-          "<td" + umabanClass + ">" + escapeHtml(row["馬番"] || "") + "</td>" +
+          '<td class="umaban"><span class="results-umabadge ' + escapeHtml(wc) + '">' + escapeHtml(row["馬番"] || "") + "</span></td>" +
           '<td class="name">' + escapeHtml(row["馬名"] || "") + "</td>" +
           "<td>" + (tags.length ? tags.join(" ") : "—") + "</td>";
         tb.appendChild(tr);
@@ -1524,7 +1592,7 @@ window.addEventListener("pageshow", (e) => {
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js?v=20260321165229").catch(() => {});
+    navigator.serviceWorker.register("sw.js?v=20260321165440").catch(() => {});
   });
 }
 </script>
