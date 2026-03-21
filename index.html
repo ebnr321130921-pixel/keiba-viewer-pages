@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="manifest" href="manifest.json?v=20260321171733" />
+<link rel="manifest" href="manifest.json?v=20260321172730" />
 <title>Keiba Top</title>
 
 <style>
@@ -152,16 +152,16 @@ body.hot-hit-silver .hit-glow.silver {
 .updatebar {
   width: 100%;
   min-height: 40px;
-  padding: 0 12px;
+  padding: 0 10px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   border-radius: 12px;
   border: 1px solid rgba(255,255,255,0.12);
   background: rgba(0,0,0,0.62);
   color: #e9edf5;
   font-weight: 900;
-  font-size: 12px;
+  font-size: 11px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -171,7 +171,7 @@ body.hot-hit-silver .hit-glow.silver {
 /* ★ Top 3行目：予想 / 成績 / 更新履歴 / WIN5 */
 .controls-row.top-row3 {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1fr 1fr 2fr 1fr;
   gap: 8px;
   align-items: center;
 }
@@ -180,7 +180,7 @@ body.hot-hit-silver .hit-glow.silver {
   min-width: 0;
 }
 .controls-row.top-row3.no-win5 {
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 2fr;
 }
 #win5Btn {
   display: none; /* ★ JSで開催日にだけ表示 */
@@ -413,6 +413,15 @@ body.hot-hit-silver .hit-glow.silver {
   border: 1px solid rgba(255,255,255,0.10);
   box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset;
 }
+
+.waku-1 { background: #ffffff; color: #111; }
+.waku-2 { background: #2b2b2b; color: #fff; }
+.waku-3 { background: #c65a5a; color: #fff; }
+.waku-4 { background: #4f7db8; color: #fff; }
+.waku-5 { background: #b99a00; color: #fff; }
+.waku-6 { background: #2f8f5a; color: #fff; }
+.waku-7 { background: #c97a2a; color: #fff; }
+.waku-8 { background: #c46ab0; color: #fff; }
 
 @media (max-width: 560px) {
   .results-table th,
@@ -1747,7 +1756,7 @@ window.addEventListener("pageshow", (e) => {
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js?v=20260321171733").catch(() => {});
+    navigator.serviceWorker.register("sw.js?v=20260321172730").catch(() => {});
   });
 }
 </script>
