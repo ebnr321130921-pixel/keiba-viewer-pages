@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="manifest" href="manifest.json?v=20260321203956" />
+<link rel="manifest" href="manifest.json?v=20260321204434" />
 <title>Keiba Top</title>
 
 <style>
@@ -1374,19 +1374,13 @@ function openResultsModal(date) {
           return Number(digits).toLocaleString("ja-JP") + "円";
         });
 
-        // ★ 基本仕様：
-        //   - 複勝 / ワイド は複数表示可
-        //   - それ以外は原則1件のみ表示
-        //   - ただし同着時は複数入る可能性があるため、その場合だけ複数表示
+        // ★ 複数表示を許可するのは 複勝 / ワイド のみ
         if (multiAllowed) {
           return normalized.join(" / ");
         }
 
-        if (normalized.length === 1) {
-          return normalized[0];
-        }
-
-        return normalized.join(" / ");
+        // ★ 単一券種（枠連 / 馬連 / 馬単 / 3連複 / 3連単 / 単勝）は先頭1件だけ表示
+        return normalized[0] || "—";
       };
 
       const payoutCard = (label, value, accent) => {
@@ -1871,7 +1865,7 @@ window.addEventListener("pageshow", (e) => {
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js?v=20260321203956").catch(() => {});
+    navigator.serviceWorker.register("sw.js?v=20260321204434").catch(() => {});
   });
 }
 </script>
