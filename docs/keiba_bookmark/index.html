@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="manifest" href="manifest.json?v=20260321202706" />
+<link rel="manifest" href="manifest.json?v=20260321203956" />
 <title>Keiba Top</title>
 
 <style>
@@ -389,13 +389,14 @@ body.hot-hit-silver .hit-glow.silver {
 .results-table td.rankmark,
 .results-table td.popodds {
   white-space: pre-line;
-  line-height: 1.15;
+  line-height: 1.22;
 }
 .results-table td.name {
   text-align: left;
   font-weight: 900;
   overflow: visible;
   text-overflow: clip;
+  letter-spacing: 0.01em;
 }
 .results-table td.umaban {
   font-weight: 1000;
@@ -432,7 +433,7 @@ body.hot-hit-silver .hit-glow.silver {
 
   .results-table th:nth-child(1),
   .results-table td:nth-child(1) {
-    width: 17%;
+    width: 16%;
   }
   .results-table th:nth-child(2),
   .results-table td:nth-child(2) {
@@ -440,11 +441,11 @@ body.hot-hit-silver .hit-glow.silver {
   }
   .results-table th:nth-child(3),
   .results-table td:nth-child(3) {
-    width: 17%;
+    width: 16%;
   }
   .results-table th:nth-child(4),
   .results-table td:nth-child(4) {
-    width: 34%;
+    width: 36%;
   }
   .results-table th:nth-child(5),
   .results-table td:nth-child(5) {
@@ -1358,31 +1359,47 @@ function openResultsModal(date) {
       const hd = (info && info.hit_detail) ? info.hit_detail : null;
       const payouts = (info && info.payouts) ? info.payouts : null;
 
-      const formatPayout = (raw) => {
+      const formatPayout = (label, raw) => {
         const s = String(raw || "").trim();
         if (!s) return "—";
 
         const parts = s.split(";").map(x => String(x || "").trim()).filter(Boolean);
-        const out = parts.map((part) => {
+        if (parts.length === 0) return "—";
+
+        const multiAllowed = (label === "複勝" || label === "ワイド");
+
+        const normalized = parts.map((part) => {
           const digits = String(part).replace(/[^0-9]/g, "");
           if (!digits) return escapeHtml(part);
           return Number(digits).toLocaleString("ja-JP") + "円";
         });
 
-        return out.join(" / ");
+        // ★ 基本仕様：
+        //   - 複勝 / ワイド は複数表示可
+        //   - それ以外は原則1件のみ表示
+        //   - ただし同着時は複数入る可能性があるため、その場合だけ複数表示
+        if (multiAllowed) {
+          return normalized.join(" / ");
+        }
+
+        if (normalized.length === 1) {
+          return normalized[0];
+        }
+
+        return normalized.join(" / ");
       };
 
       const payoutCard = (label, value, accent) => {
         return (
           '<div style="' +
             'border:1px solid ' + accent + ';' +
-            'background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));' +
+            'background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));' +
             'border-radius:14px;' +
-            'padding:12px 12px 10px 12px;' +
-            'box-shadow:0 8px 22px rgba(0,0,0,0.22);' +
+            'padding:11px 12px 10px 12px;' +
+            'box-shadow:0 6px 18px rgba(0,0,0,0.20);' +
           '">' +
-            '<div style="font-size:12px; font-weight:1000; color:var(--muted); letter-spacing:0.04em; margin-bottom:6px;">' + label + '</div>' +
-            '<div style="font-size:22px; line-height:1.15; font-weight:1000; color:#ffffff; text-shadow:0 0 12px rgba(255,255,255,0.10);">' + formatPayout(value) + '</div>' +
+            '<div style="font-size:11px; font-weight:1000; color:var(--muted); letter-spacing:0.06em; margin-bottom:6px;">' + label + '</div>' +
+            '<div style="font-size:18px; line-height:1.2; font-weight:1000; color:#ffffff;">' + formatPayout(label, value) + '</div>' +
           '</div>'
         );
       };
@@ -1418,13 +1435,13 @@ function openResultsModal(date) {
       if (hasPayouts) {
         partsHtml +=
           '<div style="font-size:14px; font-weight:1000; margin-bottom:8px;">払戻</div>' +
-          '<div style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px;">' +
-            payoutCard("単勝", payouts["払戻_単勝"], "rgba(120,170,255,0.34)") +
-            payoutCard("枠連", payouts["払戻_枠連"], "rgba(150,210,255,0.28)") +
-            payoutCard("馬連", payouts["払戻_馬連"], "rgba(255,211,77,0.42)") +
-            payoutCard("馬単", payouts["払戻_馬単"], "rgba(255,170,120,0.38)") +
-            payoutCard("3連複", payouts["払戻_3連複"], "rgba(170,150,255,0.38)") +
-            payoutCard("3連単", payouts["払戻_3連単"], "rgba(255,120,160,0.42)") +
+          '<div style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:8px;">' +
+            payoutCard("単勝", payouts["払戻_単勝"], "rgba(120,170,255,0.24)") +
+            payoutCard("枠連", payouts["払戻_枠連"], "rgba(150,210,255,0.22)") +
+            payoutCard("馬連", payouts["払戻_馬連"], "rgba(255,211,77,0.26)") +
+            payoutCard("馬単", payouts["払戻_馬単"], "rgba(255,170,120,0.24)") +
+            payoutCard("3連複", payouts["払戻_3連複"], "rgba(170,150,255,0.24)") +
+            payoutCard("3連単", payouts["払戻_3連単"], "rgba(255,120,160,0.26)") +
           '</div>';
       }
 
@@ -1854,7 +1871,7 @@ window.addEventListener("pageshow", (e) => {
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js?v=20260321202706").catch(() => {});
+    navigator.serviceWorker.register("sw.js?v=20260321203956").catch(() => {});
   });
 }
 </script>
