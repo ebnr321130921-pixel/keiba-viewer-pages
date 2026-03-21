@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="manifest" href="manifest.json?v=20260321170712" />
+<link rel="manifest" href="manifest.json?v=20260321171733" />
 <title>Keiba Top</title>
 
 <style>
@@ -152,15 +152,15 @@ body.hot-hit-silver .hit-glow.silver {
 .updatebar {
   width: 100%;
   min-height: 40px;
-  padding: 10px 12px;
-  display: inline-flex;
+  padding: 0 12px;
+  display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   border-radius: 12px;
-  border: 1px solid var(--navy-border);
-  background: var(--navy);
-  color: var(--navy-text);
-  font-weight: 1000;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.62);
+  color: #e9edf5;
+  font-weight: 900;
   font-size: 12px;
   white-space: nowrap;
   overflow: hidden;
@@ -168,19 +168,19 @@ body.hot-hit-silver .hit-glow.silver {
   box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset;
 }
 
-/* ★ Top 3行目：予想 / 成績 / 更新履歴 */
+/* ★ Top 3行目：予想 / 成績 / 更新履歴 / WIN5 */
 .controls-row.top-row3 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  align-items: stretch;
+  align-items: center;
 }
 .controls-row.top-row3 > * {
   width: 100%;
   min-width: 0;
 }
 .controls-row.top-row3.no-win5 {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr 1fr;
 }
 #win5Btn {
   display: none; /* ★ JSで開催日にだけ表示 */
@@ -354,7 +354,6 @@ body.hot-hit-silver .hit-glow.silver {
 }
 .results-table th,
 .results-table td {
-  width: 14.2857%;
   padding: 8px 6px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
   text-align: center;
@@ -363,13 +362,40 @@ body.hot-hit-silver .hit-glow.silver {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.results-table th:nth-child(1),
+.results-table td:nth-child(1) {
+  width: 16%;
+}
+.results-table th:nth-child(2),
+.results-table td:nth-child(2) {
+  width: 18%;
+}
+.results-table th:nth-child(3),
+.results-table td:nth-child(3) {
+  width: 16%;
+}
+.results-table th:nth-child(4),
+.results-table td:nth-child(4) {
+  width: 36%;
+}
+.results-table th:nth-child(5),
+.results-table td:nth-child(5) {
+  width: 14%;
+}
 .results-table th {
   background: rgba(255,255,255,0.06);
   font-weight: 1000;
 }
+.results-table td.rankmark,
+.results-table td.popodds {
+  white-space: pre-line;
+  line-height: 1.15;
+}
 .results-table td.name {
   text-align: left;
   font-weight: 900;
+  overflow: visible;
+  text-overflow: clip;
 }
 .results-table td.umaban {
   font-weight: 1000;
@@ -386,6 +412,46 @@ body.hot-hit-silver .hit-glow.silver {
   line-height: 1;
   border: 1px solid rgba(255,255,255,0.10);
   box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset;
+}
+
+@media (max-width: 560px) {
+  .results-table th,
+  .results-table td {
+    padding: 7px 4px;
+    font-size: 11px;
+  }
+
+  .results-table th:nth-child(1),
+  .results-table td:nth-child(1) {
+    width: 17%;
+  }
+  .results-table th:nth-child(2),
+  .results-table td:nth-child(2) {
+    width: 18%;
+  }
+  .results-table th:nth-child(3),
+  .results-table td:nth-child(3) {
+    width: 17%;
+  }
+  .results-table th:nth-child(4),
+  .results-table td:nth-child(4) {
+    width: 34%;
+  }
+  .results-table th:nth-child(5),
+  .results-table td:nth-child(5) {
+    width: 14%;
+  }
+
+  .results-table td.name {
+    font-size: 11px;
+  }
+
+  .results-umabadge {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
 }
 .results-empty {
   padding: 14px;
@@ -875,7 +941,7 @@ body.hot-hit-silver .hit-glow.silver {
       <button id="resultsBtn" class="btn" type="button">リザルト</button>
     </div>
 
-    <!-- 3行目：予想 / 成績 / 更新履歴 -->
+    <!-- 3行目：予想 / 成績 / 更新履歴 / WIN5 -->
     <div class="controls-row top-row3">
       <a id="todayJushoBtn" class="btn" href="yosouka_prediction_results.html">予想</a>
       <a id="tipsterPerfBtn" class="btn" href="yosouka_tipster_performance.html">成績</a>
@@ -1236,10 +1302,8 @@ function openResultsModal(date) {
       tbl.className = "results-table";
       tbl.innerHTML =
         "<thead><tr>" +
-          "<th>着順</th>" +
-          "<th>印</th>" +
-          "<th>人気</th>" +
-          "<th>オッズ</th>" +
+          "<th>着順/印</th>" +
+          "<th>人気/オッズ</th>" +
           "<th>馬番</th>" +
           "<th>馬名</th>" +
           "<th>注目</th>" +
@@ -1262,10 +1326,8 @@ function openResultsModal(date) {
         }
 
         tr.innerHTML =
-          "<td>" + escapeHtml(String(_resultNum(row)) + "着") + "</td>" +
-          "<td>" + escapeHtml(row["予想印"] || "") + "</td>" +
-          "<td>" + escapeHtml(row["人気"] || "") + "</td>" +
-          "<td>" + escapeHtml(row["オッズ"] || "") + "</td>" +
+          '<td class="rankmark">' + escapeHtml(String(_resultNum(row)) + "着") + "<br>" + escapeHtml(row["予想印"] || "—") + "</td>" +
+          '<td class="popodds">' + escapeHtml(row["人気"] || "—") + "<br>" + escapeHtml(row["オッズ"] || "—") + "</td>" +
           '<td class="umaban"><span class="results-umabadge ' + escapeHtml(wc) + '">' + escapeHtml(row["馬番"] || "") + "</span></td>" +
           '<td class="name">' + escapeHtml(row["馬名"] || "") + "</td>" +
           "<td>" + (tags.length ? tags.join(" ") : "—") + "</td>";
@@ -1685,7 +1747,7 @@ window.addEventListener("pageshow", (e) => {
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js?v=20260321170712").catch(() => {});
+    navigator.serviceWorker.register("sw.js?v=20260321171733").catch(() => {});
   });
 }
 </script>
