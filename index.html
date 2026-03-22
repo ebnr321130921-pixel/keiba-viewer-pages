@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="manifest" href="manifest.json?v=20260322163450" />
+<link rel="manifest" href="manifest.json?v=20260322163615" />
 <title>Keiba Top</title>
 
 <style>
@@ -1609,7 +1609,9 @@ function _buildResultsSummary(date) {
   for (const key of order) {
     const st = stats[key];
     const total = st.total || 0;
-    const winPct = Number(_fmtPct(st.win, total));
+    const firstPct = Number(_fmtPct(st.first, total));
+    const secondPct = Number(_fmtPct(st.second, total));
+    const thirdPct = Number(_fmtPct(st.third, total));
     const top3Pct = Number(_fmtPct(st.top3, total));
 
     const card = document.createElement("div");
@@ -1630,9 +1632,19 @@ function _buildResultsSummary(date) {
 
       '<div class="results-barblock">' +
         '<div class="results-barrow">' +
-          '<div class="results-barlabel">勝率</div>' +
-          '<div class="results-bartrack"><div class="results-barfill win" style="width:' + String(winPct) + '%;"></div></div>' +
-          '<div class="results-barvalue">' + escapeHtml(_fmtPct(st.win, total)) + '%</div>' +
+          '<div class="results-barlabel">1着率</div>' +
+          '<div class="results-bartrack"><div class="results-barfill win" style="width:' + String(firstPct) + '%;"></div></div>' +
+          '<div class="results-barvalue">' + escapeHtml(_fmtPct(st.first, total)) + '%</div>' +
+        '</div>' +
+        '<div class="results-barrow">' +
+          '<div class="results-barlabel">2着率</div>' +
+          '<div class="results-bartrack"><div class="results-barfill top3" style="width:' + String(secondPct) + '%;"></div></div>' +
+          '<div class="results-barvalue">' + escapeHtml(_fmtPct(st.second, total)) + '%</div>' +
+        '</div>' +
+        '<div class="results-barrow">' +
+          '<div class="results-barlabel">3着率</div>' +
+          '<div class="results-bartrack"><div class="results-barfill top3" style="width:' + String(thirdPct) + '%;"></div></div>' +
+          '<div class="results-barvalue">' + escapeHtml(_fmtPct(st.third, total)) + '%</div>' +
         '</div>' +
         '<div class="results-barrow">' +
           '<div class="results-barlabel">複勝率</div>' +
@@ -2289,7 +2301,7 @@ window.addEventListener("pageshow", (e) => {
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js?v=20260322163450").catch(() => {});
+    navigator.serviceWorker.register("sw.js?v=20260322163615").catch(() => {});
   });
 }
 </script>
