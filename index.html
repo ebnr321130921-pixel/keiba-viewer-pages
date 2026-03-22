@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="manifest" href="manifest.json?v=20260322165033" />
+<link rel="manifest" href="manifest.json?v=20260322165808" />
 <title>Keiba Top</title>
 
 <style>
@@ -895,11 +895,21 @@ body.hot-hit-silver .hit-glow.silver {
   min-width: 0;
 }
 .rname {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-weight: 1000;
   font-size: 14px;
   line-height: 1.25;
   margin-bottom: 6px;
 }
+.rname-main {
+  min-width: 0;
+}
+.rname-mark {
+  flex: 0 0 auto;
+}
+
 .pills {
   display: flex;
   flex-wrap: wrap;
@@ -1123,12 +1133,12 @@ body.hot-hit-silver .hit-glow.silver {
   mix-blend-mode: screen;
 }
 
-/* ★ 重賞予測ピル：オレンジ + 文字は白（他と統一） */
+/* ★ 重賞予測/◉ピル：青 + 文字は白 */
 .pill.pred {
-  background: rgba(255, 150, 40, 0.62);
-  border-color: rgba(255, 150, 40, 0.88);
+  background: rgba(70, 140, 255, 0.62);
+  border-color: rgba(70, 140, 255, 0.88);
   color: #ffffff;
-  box-shadow: 0 0 0 1px rgba(255,150,40,0.16) inset, 0 0 16px rgba(255,150,40,0.18);
+  box-shadow: 0 0 0 1px rgba(70,140,255,0.16) inset, 0 0 16px rgba(70,140,255,0.18);
 }
 
 @media (max-width: 560px) {
@@ -2092,7 +2102,19 @@ function renderList(date) {
 
       const name = document.createElement("div");
       name.className = "rname";
-      name.textContent = info.race_name || "（レース名なし）";
+
+      const nameMain = document.createElement("span");
+      nameMain.className = "rname-main";
+      nameMain.textContent = info.race_name || "（レース名なし）";
+      name.appendChild(nameMain);
+
+      const hasMaruHonmei = !!((info && info.rows ? info.rows : []).some(row => String((row && row["予想印"]) || "").includes("◉")));
+      if (hasMaruHonmei) {
+        const p = document.createElement("span");
+        p.className = "pill pred rname-mark";
+        p.textContent = "◉";
+        name.appendChild(p);
+      }
 
       const pills = document.createElement("div");
       pills.className = "pills";
@@ -2112,14 +2134,6 @@ function renderList(date) {
         const p = document.createElement("span");
         p.className = "pill " + rankClass(rec);
         p.textContent = "おすすめ: " + rec;
-        pills.appendChild(p);
-      }
-
-      const hasMaruHonmei = !!((info && info.rows ? info.rows : []).some(row => String((row && row["予想印"]) || "").includes("◉")));
-      if (hasMaruHonmei) {
-        const p = document.createElement("span");
-        p.className = "pill pred";
-        p.textContent = "◉";
         pills.appendChild(p);
       }
 
@@ -2310,7 +2324,7 @@ window.addEventListener("pageshow", (e) => {
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js?v=20260322165033").catch(() => {});
+    navigator.serviceWorker.register("sw.js?v=20260322165808").catch(() => {});
   });
 }
 </script>
