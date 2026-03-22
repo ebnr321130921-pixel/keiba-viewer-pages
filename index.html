@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="manifest" href="manifest.json?v=20260322171824" />
+<link rel="manifest" href="manifest.json?v=20260322172321" />
 <title>Keiba Top</title>
 
 <style>
@@ -2126,7 +2126,13 @@ function renderList(date) {
       const hasMaruHonmei = !!((info && info.rows ? info.rows : []).some(row => String((row && row["予想印"]) || "").includes("◉")));
       if (hasMaruHonmei) {
         const p = document.createElement("span");
-        p.className = "pill pred rname-mark";
+        const baba = String((info.race_info && info.race_info["馬場"]) ? info.race_info["馬場"] : "");
+        const predSurfClass =
+          baba.includes("障") ? "pred-jump" :
+          (baba.includes("ダ") || baba.includes("ダート")) ? "pred-dirt" :
+          "pred-turf";
+
+        p.className = "pill pred rname-mark " + predSurfClass;
         p.textContent = "◉";
         name.appendChild(p);
       }
@@ -2345,7 +2351,7 @@ window.addEventListener("pageshow", (e) => {
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js?v=20260322171824").catch(() => {});
+    navigator.serviceWorker.register("sw.js?v=20260322172321").catch(() => {});
   });
 }
 </script>
