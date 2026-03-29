@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="manifest" href="manifest.json?v=20260329105015" />
+<link rel="manifest" href="manifest.json?v=20260329105733" />
 <title>Keiba Top</title>
 
 <style>
@@ -1178,9 +1178,9 @@ body.hot-hit-silver .hit-glow.silver {
       <select id="dateSel" class="select"></select>
     </div>
 
-    <!-- 2行目：並び / 推奨有無 / 更新 / リザルト -->
+    <!-- 2行目：終了レース / 推奨有無 / 更新 / リザルト -->
     <div class="controls-row top-row2">
-      <button id="sortToggleBtn" class="btn" type="button">並び: 発走</button>
+      <button id="hideFinishedBtn" class="btn" type="button">終了レース: 表示</button>
       <button id="hideEmptyBtn" class="btn" type="button">推奨なし: 表示</button>
       <button id="refreshBtn" class="btn" type="button">更新</button>
       <button id="resultsBtn" class="btn" type="button">リザルト</button>
@@ -1986,7 +1986,7 @@ function loadDates() {
   return "";
 }
 
-let sortMode = "time";    // "place" | "time"
+let hideFinished = false; // 終了済みレースを隠す
 let hideEmpty = false;    // 推奨なしを隠す
 
 function _timeKey(x) {
@@ -2006,38 +2006,34 @@ function renderList(date) {
   const obj = (DATA.races[date] || {});
   let tracks = Object.keys(obj);
 
-  // --- 競馬場 or 発走時刻で並び替え ---
-  if (sortMode === "time") {
-    tracks.sort((a,b) => {
-      const ra = obj[a] || {};
-      const rb = obj[b] || {};
+  // --- 競馬場は発走時刻順で固定 ---
+  tracks.sort((a,b) => {
+    const ra = obj[a] || {};
+    const rb = obj[b] || {};
 
-      const mina = (() => {
-        let best = 999999;
-        for (const r of Object.keys(ra)) {
-          const info = ra[r] || null;
-          const st = (info && info.race_info) ? info.race_info["発走時刻"] : "";
-          best = Math.min(best, _timeKey(st));
-        }
-        return best;
-      })();
+    const mina = (() => {
+      let best = 999999;
+      for (const r of Object.keys(ra)) {
+        const info = ra[r] || null;
+        const st = (info && info.race_info) ? info.race_info["発走時刻"] : "";
+        best = Math.min(best, _timeKey(st));
+      }
+      return best;
+    })();
 
-      const minb = (() => {
-        let best = 999999;
-        for (const r of Object.keys(rb)) {
-          const info = rb[r] || null;
-          const st = (info && info.race_info) ? info.race_info["発走時刻"] : "";
-          best = Math.min(best, _timeKey(st));
-        }
-        return best;
-      })();
+    const minb = (() => {
+      let best = 999999;
+      for (const r of Object.keys(rb)) {
+        const info = rb[r] || null;
+        const st = (info && info.race_info) ? info.race_info["発走時刻"] : "";
+        best = Math.min(best, _timeKey(st));
+      }
+      return best;
+    })();
 
-      if (mina !== minb) return mina - minb;
-      return String(a).localeCompare(String(b), "ja");
-    });
-  } else {
-    tracks.sort((a,b) => String(a).localeCompare(String(b), "ja"));
-  }
+    if (mina !== minb) return mina - minb;
+    return String(a).localeCompare(String(b), "ja");
+  });
 
   for (const t of tracks) {
     const section = document.createElement("div");
@@ -2077,9 +2073,13 @@ function renderList(date) {
       const row = document.createElement("div");
       row.className = "rrow";
 
-      // ★ 行にフラグを持たせて、hideEmpty のときは即非表示
+      const isFinishedRace = !!(info && info.result_done);
+
+      // ★ 行にフラグを持たせて、条件一致時は即非表示
       row.dataset.empty = isEmptyRace ? "1" : "0";
-      if (hideEmpty && isEmptyRace) {
+      row.dataset.finished = isFinishedRace ? "1" : "0";
+
+      if ((hideEmpty && isEmptyRace) || (hideFinished && isFinishedRace)) {
         row.style.display = "none";
       }
 
@@ -2294,13 +2294,19 @@ function init() {
     if (e.key === "Escape") closeResultsModal();
   });
 
-  // ★ 並び切替
-  const sortBtn = el("sortToggleBtn");
-  if (sortBtn) {
-    sortBtn.addEventListener("click", () => {
-      sortMode = (sortMode === "place") ? "time" : "place";
-      sortBtn.textContent = (sortMode === "place") ? "並び: 競馬場" : "並び: 発走";
-      renderList(el("dateSel").value);
+  // ★ 終了レース切替
+  const hideFinishedBtn = el("hideFinishedBtn");
+  if (hideFinishedBtn) {
+    hideFinishedBtn.addEventListener("click", () => {
+      hideFinished = !hideFinished;
+      hideFinishedBtn.textContent = hideFinished ? "終了レース: 非表示" : "終了レース: 表示";
+
+      const rows = document.querySelectorAll(".rrow");
+      rows.forEach((row) => {
+        const isFinished = row.dataset.finished === "1";
+        const isEmpty = row.dataset.empty === "1";
+        row.style.display = ((hideFinished && isFinished) || (hideEmpty && isEmpty)) ? "none" : "";
+      });
     });
   }
 
@@ -2311,10 +2317,11 @@ function init() {
       hideEmpty = !hideEmpty;
       hideBtn.textContent = hideEmpty ? "推奨なし: 非表示" : "推奨なし: 表示";
 
-      // ★ 既に描画済みの行だけ切替（再レンダリング不要）
-      const rows = document.querySelectorAll(".rrow[data-empty='1']");
+      const rows = document.querySelectorAll(".rrow");
       rows.forEach((row) => {
-        row.style.display = hideEmpty ? "none" : "";
+        const isFinished = row.dataset.finished === "1";
+        const isEmpty = row.dataset.empty === "1";
+        row.style.display = ((hideFinished && isFinished) || (hideEmpty && isEmpty)) ? "none" : "";
       });
     });
   }
@@ -2351,7 +2358,7 @@ window.addEventListener("pageshow", (e) => {
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js?v=20260329105015").catch(() => {});
+    navigator.serviceWorker.register("sw.js?v=20260329105733").catch(() => {});
   });
 }
 </script>
