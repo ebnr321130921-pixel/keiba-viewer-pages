@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="manifest" href="manifest.json?v=20260329110541" />
+<link rel="manifest" href="manifest.json?v=20260329110639" />
 <title>Keiba Top</title>
 
 <style>
@@ -1180,7 +1180,7 @@ body.hot-hit-silver .hit-glow.silver {
 
     <!-- 2行目：終了レース / 推奨有無 / 更新 / リザルト -->
     <div class="controls-row top-row2">
-      <button id="hideFinishedBtn" class="btn" type="button">終了レース: 表示</button>
+      <button id="hideFinishedBtn" class="btn" type="button">終了: 表示</button>
       <button id="hideEmptyBtn" class="btn" type="button">推奨なし: 表示</button>
       <button id="refreshBtn" class="btn" type="button">更新</button>
       <button id="resultsBtn" class="btn" type="button">リザルト</button>
@@ -2299,7 +2299,7 @@ function init() {
   if (hideFinishedBtn) {
     hideFinishedBtn.addEventListener("click", () => {
       hideFinished = !hideFinished;
-      hideFinishedBtn.textContent = hideFinished ? "終了レース: 非表示" : "終了レース: 表示";
+      hideFinishedBtn.textContent = hideFinished ? "終了: 非表示" : "終了: 表示";
 
       const rows = document.querySelectorAll(".rrow");
       rows.forEach((row) => {
@@ -2358,7 +2358,7 @@ window.addEventListener("pageshow", (e) => {
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js?v=20260329110541").catch(() => {});
+    navigator.serviceWorker.register("sw.js?v=20260329110639").catch(() => {});
   });
 }
 </script>
