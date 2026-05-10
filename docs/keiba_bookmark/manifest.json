@@ -1,7 +1,7 @@
 {
   "name": "Keiba Viewer",
   "short_name": "Keiba",
-  "start_url": "index.html?v=20260510091709",
+  "start_url": "index.html?v=20260510092638",
   "scope": "./",
   "display": "standalone",
   "background_color": "#0f1115",
