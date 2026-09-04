@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="manifest" href="manifest.json?v=20260830195444" />
+<link rel="manifest" href="manifest.json?v=20260904141504" />
 <title>出馬表ビューア</title>
 
 <style>
@@ -1084,6 +1084,72 @@ th.sticky-left-1, th.sticky-left-2 {
   .pack4c-cell, .pack4c-lbl { min-height: 32px; }
   .pack4c-horse { font-size: 12px; padding: 5px 8px; }
 }
+
+/* 2026 mobile refresh: information-first, quiet, compact */
+:root {
+  --bg: #070a0f;
+  --panel: #10151d;
+  --panel2: #0c1118;
+  --text: #f5f7fb;
+  --muted: #8490a3;
+  --line: rgba(255,255,255,.075);
+  --navy: rgba(19,27,40,.96);
+  --navy-border: rgba(126,148,181,.22);
+  --navy-focus: rgba(120,181,255,.18);
+}
+body {
+  background: linear-gradient(180deg, #090d14 0, #070a0f 42%, #06080c 100%);
+}
+.hit-glow, .card.sg-card::before { display:none !important; }
+.card, .card.in3, .chip.rec-on, .pack4c-horse { animation:none !important; }
+.btn, .select, .updatebar { box-shadow:none; }
+.footer { display:none; }
+
+@media (max-width: 560px) {
+  body { padding-bottom: env(safe-area-inset-bottom); }
+  .topbar {
+    padding: calc(7px + env(safe-area-inset-top)) 10px 9px;
+    background: rgba(7,10,15,.92);
+    border-bottom-color: rgba(255,255,255,.06);
+    backdrop-filter: blur(18px) saturate(135%);
+  }
+  .racename {
+    margin:0 0 7px; padding:0 2px 7px;
+    border:0; border-radius:0; background:transparent; box-shadow:none;
+    font-size:17px; font-weight:800; letter-spacing:-.02em;
+  }
+  .controls { gap:6px; }
+  .controls-row.viewer-row1 { grid-template-columns:1fr 1fr 1fr 1fr; gap:6px; }
+  .controls-row.viewer-row2 { grid-template-columns:1.25fr 1fr .72fr .72fr; gap:6px; }
+  .btn, .select {
+    min-height:38px; padding:8px 7px; border-radius:10px;
+    font-size:12px; font-weight:750; border-color:rgba(255,255,255,.08);
+    background:#111824;
+  }
+  #predictBtn { background:#e9b949; color:#171109; border-color:#e9b949; }
+  .controls-row.viewer-row3 { display:block; }
+  .controls-row.viewer-row3 .select { width:100%; min-height:36px; color:var(--muted); }
+  #updateBadge { display:none; }
+  .controls-row.viewer-row4 { margin-top:0; }
+  #pack4cBtn { min-height:34px; background:transparent; color:var(--muted); }
+  .wrapper { padding:9px 10px calc(18px + env(safe-area-inset-bottom)); }
+  .cardwrap { margin-top:0; }
+  .cards { gap:7px; }
+  .card {
+    border-radius:13px; border-color:rgba(255,255,255,.07);
+    background:#0e141d; box-shadow:0 5px 16px rgba(0,0,0,.22);
+  }
+  .card.collapsed .c1 { grid-template-columns:44px 1fr auto; min-height:54px; padding:7px 10px; }
+  .card.collapsed .umabadge { width:38px; height:38px; border-radius:10px; font-size:15px; }
+  .card.collapsed .hname { font-size:15px; letter-spacing:-.01em; }
+  .card.collapsed .marks { flex-direction:row; align-items:center; gap:8px; }
+  .card.collapsed .marks .mstrong { font-size:20px; line-height:1; }
+  .card .grid { padding:9px 11px 12px; gap:7px; }
+  .kv { grid-template-columns:70px 1fr; }
+  .pill { padding:5px 8px; }
+  .sugouma-flag { margin:0 0 6px; padding:7px 10px; border-radius:10px; box-shadow:none; }
+  .pack4c-wrap { margin-top:7px; border-radius:12px; background:#0d131c; box-shadow:none; }
+}
 </style>
 </head>
 
@@ -1103,11 +1169,11 @@ th.sticky-left-1, th.sticky-left-2 {
   <div class="controls">
     <!-- 1行目：Top / 前 / 次 / 一括（均等） -->
     <div class="controls-row viewer-row1">
-      <button id="backTopBtn" class="btn" type="button">Topへ戻る</button>
+      <button id="backTopBtn" class="btn" type="button">トップ</button>
       <!-- ★ PCでも前/次を出す：mobile-only を外す -->
       <button id="prevRaceBtn" class="btn" type="button">◀ 前</button>
       <button id="nextRaceBtn" class="btn" type="button">次 ▶</button>
-      <button id="cardToggleBtn" class="btn mobile-only" type="button">一括: 閉じる</button>
+      <button id="cardToggleBtn" class="btn mobile-only" type="button">詳細</button>
     </div>
 
     <!-- 2行目：日付 / 競馬場 / レース / 予想 -->
@@ -1169,11 +1235,6 @@ th.sticky-left-1, th.sticky-left-2 {
     <div id="cards" class="cards"></div>
   </div>
 
-  <div class="footer">
-    ・スマホは自動でカード表示になります（横スクロール不要）。<br/>
-    ・PCは表表示（馬番/馬名は固定）です。<br/>
-    ・CSVを更新したら、再度 Viwer_EDIT.py を実行してHTMLを生成してください。
-  </div>
 </div>
 
 <script>
@@ -3231,7 +3292,7 @@ function renderPack4C() {
   }
 }
 
-let cardsCollapsed = false;
+let cardsCollapsed = isMobile();
 
 // ★ レース一覧の並び順（デフォルトは発走時刻順）
 let raceOrderMode = "time"; // "time" | "race"
@@ -3261,7 +3322,7 @@ function updateCardToggleBtn() {
     return;
   }
   btn.style.display = "inline-flex";
-  btn.textContent = cardsCollapsed ? "一括: 開く" : "一括: 閉じる";
+  btn.textContent = cardsCollapsed ? "詳細を開く" : "詳細を閉じる";
 }
 
 function applyCollapsedStateToCards() {
@@ -3769,7 +3830,7 @@ if (shouldForceTopRedirect()) {
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js?v=20260830195444").catch(() => {});
+    navigator.serviceWorker.register("sw.js?v=20260904141504").catch(() => {});
   });
 }
 </script>
