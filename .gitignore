@@ -19,6 +19,15 @@ Output_keiba_tables/
 Output_roi/
 umanity_html/
 
+# ===== local purchase system data =====
+purchase_system/config/*.xlsx
+purchase_system/config/*.xlsx.inspect.ndjson
+purchase_system/config/auto_purchase.json
+purchase_system/logs/
+purchase_system/state/
+purchase_system/browser_profile/
+purchase_system/**/__pycache__/
+
 # ===== local state / secrets-ish =====
 umanity_storage_state.json
 
