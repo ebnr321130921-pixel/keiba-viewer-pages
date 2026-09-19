@@ -26,6 +26,8 @@ purchase_system/config/auto_purchase.json
 purchase_system/logs/
 purchase_system/state/
 purchase_system/browser_profile/
+purchase_system/browser_profile.nosync/
+purchase_system/browser_profile.nosync
 purchase_system/**/__pycache__/
 
 # ===== local state / secrets-ish =====
