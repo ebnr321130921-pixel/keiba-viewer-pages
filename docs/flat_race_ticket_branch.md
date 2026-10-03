@@ -72,6 +72,13 @@ Predict/Resultsの馬番集合、重複キー、上位3着と払戻を確認し�
 したがって今回は後追い診断であり、最新モデルの未使用期間での採用検証ではない。
 8月回収率が悪化し全期間100%未満のため、本番への自動採用は行わない。
 
+2026-10-04のPredictにはモデル方式`calibrated_lr_with_place2_actual_market_v2`、
+モデル版`2026-10-03.actual-market-profitability-v8`が記録されている。
+7/4、8/1、9/27の平場の軸ML3着内値中央値は90.5%、87.6%、85.4%だが、今日の平場は56.6%。
+確率の数値分布が大きく違うため、過去データから選んだ60%等の閾値を現行モデルに直結しない。
+当日の出力も「モデル互換性未検証」の比較候補。現行モデルと学習時点を記録した
+過去予測の再試算、または今後の未使用データでフィルターを較正してから採用判断する。
+
 ## 再検証と当日の比較候補
 
 ```sh
@@ -82,6 +89,6 @@ Predict/Resultsの馬番集合、重複キー、上位3着と払戻を確認し�
 `--recommend-date`はその日の保存Predictから候補を出すだけで、購入設定や本番Viewerを変更しない。
 当日の重賞・障害・新馬は「unchanged」と表示し、買い目はこの候補側では作らない。
 
-結果は`outputs/flat_ticket_branch_20261004_v2/`の`report.json`、`race_comparison.csv`、
+結果は`outputs/flat_ticket_branch_20261004_final/`の`report.json`、`race_comparison.csv`、
 `candidate_policy.json`、`recommendations_20261004.csv`。
 候補JSONは`promoted: false`で、本番の設定ファイルとして読み込む処理は接続していない。
