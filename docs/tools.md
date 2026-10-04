@@ -17,7 +17,7 @@
 - `purchase_system/analysis/`: 手動の精度・回収率比較、校正器の再学習、UI検証。
   再学習・出力更新を行うツールもあるため、一覧を見る目的で一括実行しない。
 - `build_course_bias_report.py`: 現行の脚質推定・競馬場相互作用を使う手動レポート。
-- `purchase_system/analysis/validate_flat_race_tickets.py`: 平場の見送り・3連単・3連複BOX/1軸/2軸等を時系列・同一予算で比較。結果と当日の比較候補を出す。このツールは本番採用・購入・再収集をしない。最新Rの仕様と結果は`docs/flat_purchase_model.md`、初回比較の記録は`docs/flat_race_ticket_branch.md`。
+- `purchase_system/analysis/validate_flat_race_tickets.py`: 平場の見送り・3連単・3連複BOX/1軸/2軸等を時系列・同一予算で比較。3連単は同じ分岐対象で1着固定・上位2頭・3頭BOXの期間別成績も出す。結果と当日の比較候補を出す。このツールは本番採用・購入・再収集をしない。最新Rの仕様と結果は`docs/flat_purchase_model.md`、初回比較の記録は`docs/flat_race_ticket_branch.md`。
 - `purchase_system/analysis/validate_conditional_trio.py`: 2頭軸6点200円、1頭軸、軸なしBOX、軸候補3頭＋紐3頭10点を突出度で切り替える候補の同一予算比較。1,000円の均等10点対5点も照合する。購入・本番設定変更はしない。詳細は`docs/conditional_trio_comparison.md`。
 - `docs/`: 仕様と検証結果の説明。`outputs/`等の既存レポートは検証根拠として保持。
 
