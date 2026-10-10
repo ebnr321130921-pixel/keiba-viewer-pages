@@ -1,5 +1,6 @@
 .DS_Store
 **/.DS_Store
+analysis_engine/.deps/
 
 # ===== Python =====
 __pycache__/
