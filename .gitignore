@@ -2,6 +2,19 @@
 **/.DS_Store
 analysis_engine/.deps/
 
+# Ver2 local data, old source archive and interpreter (never publish)
+/自動購入システム・データ格納/
+/保管/
+/.venv314/
+/Cache/
+/outputs
+/config
+/logs
+/keiba_sim.log
+/Output_roi
+/umanity_html
+/BAKEN
+
 # ===== Python =====
 __pycache__/
 *.pyc
