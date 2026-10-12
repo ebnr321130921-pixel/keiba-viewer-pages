@@ -719,6 +719,13 @@ td {border-color:var(--line)}
 #updateBadge{display:none}.topbar .controls-row.top-row2{grid-template-columns:repeat(4,minmax(0,1fr))}.topbar .controls-row.top-row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 
 .secthead .track{background:#273241;color:#edf2f8;border-color:#566373;text-shadow:none;box-shadow:none}.secthead .meta{color:var(--muted)}
+
+/* Top has one evenly spaced row of four actions in both layouts. */
+.top-home .top-actions,.yosouka-navigation {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:100%}
+.top-home .top-actions > *,.yosouka-navigation > * {box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:100%;min-width:0;height:40px;min-height:40px;margin:0;padding:0 4px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);font-size:12px;font-weight:700;white-space:nowrap;text-decoration:none}
+.top-home .controls-row {grid-template-columns:minmax(0,1fr)}
+.top-home .top-update-line {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px 10px;padding:12px 2px 4px;color:var(--muted);font-size:11px;user-select:none;-webkit-user-select:none}
+.top-home .swipe-hint {font-size:10px}
 </style><script>(() => {
   const key='keibaDisplayTheme';
   let theme='night';
@@ -749,10 +756,12 @@ td {border-color:var(--line)}
   <div class="topbar">
     <div>
       <h1 class="h1">YOSOUKA Prediction Results</h1>
-      <div class="row">
+      <nav class="row yosouka-navigation" aria-label="予想ページ操作">
         <a class="btn" id="backBtn" href="index.html">Topへ戻る</a>
         <a class="btn" id="viewerBtn" href="keiba_viewer.html">出馬表へ</a>
-      </div>
+        <a class="btn" href="yosouka_tipster_performance.html">成績</a>
+        <button class="theme-toggle" type="button">昼モード</button>
+      </nav>
     </div>
   </div>
 

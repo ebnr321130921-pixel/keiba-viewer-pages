@@ -422,6 +422,13 @@ td {border-color:var(--line)}
 #updateBadge{display:none}.topbar .controls-row.top-row2{grid-template-columns:repeat(4,minmax(0,1fr))}.topbar .controls-row.top-row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 
 .secthead .track{background:#273241;color:#edf2f8;border-color:#566373;text-shadow:none;box-shadow:none}.secthead .meta{color:var(--muted)}
+
+/* Top has one evenly spaced row of four actions in both layouts. */
+.top-home .top-actions,.yosouka-navigation {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:100%}
+.top-home .top-actions > *,.yosouka-navigation > * {box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:100%;min-width:0;height:40px;min-height:40px;margin:0;padding:0 4px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);font-size:12px;font-weight:700;white-space:nowrap;text-decoration:none}
+.top-home .controls-row {grid-template-columns:minmax(0,1fr)}
+.top-home .top-update-line {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px 10px;padding:12px 2px 4px;color:var(--muted);font-size:11px;user-select:none;-webkit-user-select:none}
+.top-home .swipe-hint {font-size:10px}
 </style><script>(() => {
   const key='keibaDisplayTheme';
   let theme='night';
@@ -468,7 +475,7 @@ td {border-color:var(--line)}
       <!-- ★ 一括表示/非表示 -->
       <button id="toggleStatsBtn" class="btn" type="button">詳細を非表示</button>
 
-      <span class="pill">更新: 2026-10-12 09:43</span>
+      <span class="pill">更新: 2026-10-12 09:46</span>
     </div>
 
     <div id="list" style="margin-top:10px;"></div>
