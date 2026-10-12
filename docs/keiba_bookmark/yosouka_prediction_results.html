@@ -670,7 +670,7 @@ button,select,input,textarea {font-family:var(--viewer-font)}
 .pack4c-plot {background:var(--panel2);border-color:var(--line)}
 thead th {background:var(--panel2);color:var(--ink);border-color:var(--line)}
 td {border-color:var(--line)}
-.view-switch {display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin:0 0 10px}
+.view-switch {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 10px}
 .view-switch a,.view-switch .theme-toggle {display:flex;align-items:center;justify-content:center;height:40px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);text-decoration:none;font-size:12px;font-weight:700}
 .view-switch a.active {background:#172f55;color:white;border-color:#172f55}
 @media(max-width:560px){html,body{background:var(--bg)}.topbar{background:var(--panel)}.racename{background:transparent}}
@@ -715,6 +715,8 @@ td {border-color:var(--line)}
 .pill.muted {background:#d2d7df;color:#344052;border-color:#aab3c1}
 .pills .pill-win5 {background:#243c61;color:#f2f6ff;border-color:#7189a9}
 .status-pill,.tag {background:#273241;color:#edf2f8;border-color:#566373}
+
+#updateBadge{display:none}.topbar .controls-row.top-row2{grid-template-columns:repeat(3,minmax(0,1fr))}
 </style><script>(() => {
   const key='keibaDisplayTheme';
   let theme='night';
