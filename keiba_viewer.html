@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="theme-color" content="#06080c" />
-<link rel="manifest" href="manifest.json?v=20261012165708" />
+<link rel="manifest" href="manifest.json?v=20261012170024" />
 <title>競馬予測｜Ver2.01</title>
 
 <style>
@@ -3053,7 +3053,7 @@ function renderRowsTable(rows) {
 
       if (c === "予想印") {
         td.classList.add(markClass(v));
-        td.title = [r["◉判定根拠"], r["爆判定根拠"], r["飛判定根拠"]].filter(Boolean).join(" / ");
+        td.title = [r["◉判定根拠"], r["飛判定根拠"]].filter(Boolean).join(" / ");
         if (String(v).includes("◉") && r["◉判定根拠"]) {
           const details = document.createElement("details");
           const summary = document.createElement("summary");
@@ -3114,9 +3114,9 @@ function renderRowsCards(rows) {
     const umaban = escapeHtml(r["馬番"]);
     const horse = escapeHtml(r["馬名"]);
     const markRaw = String(r["予想印"] || "");
-    const markReason = escapeHtml([r["爆判定根拠"], r["飛判定根拠"]].filter(Boolean).join(" / "));
+    const markReason = escapeHtml([r["飛判定根拠"]].filter(Boolean).join(" / "));
     const nativeReason = escapeHtml(r.__native_explanation || "");
-    const markTitle = escapeHtml([r["爆判定根拠"],r["飛判定根拠"]].filter(Boolean).join(" / "));
+    const markTitle = escapeHtml([r["飛判定根拠"]].filter(Boolean).join(" / "));
     const scoreLabel = escapeHtml(probabilityLabel());
     const mark = escapeHtml(markRaw);
     const markConsensus = String(r.__mark_consensus || "").trim();
@@ -3170,7 +3170,7 @@ function renderRowsCards(rows) {
         '<div class="kv full"><div class="k">印の根拠</div><div class="v">' + escapeHtml(r.__native_mark_summary || '') + '</div></div>' +
         '<div class="kv full"><div class="k">モデル版</div><div class="v">' + escapeHtml(r.__native_model) + '</div></div>' :
         '') +
-      (markReason ? ('<div class="kv full"><div class="k">爆・飛の根拠</div><div class="v">' + markReason + '</div></div>') : "") +
+      (markReason ? ('<div class="kv full"><div class="k">飛の根拠</div><div class="v">' + markReason + '</div></div>') : "") +
       '<div class="kv full"><div class="k">騎手/調教師</div><div class="v">' + (ky || "—") + "</div></div>";
 
     card.appendChild(head);
@@ -4421,7 +4421,7 @@ if (shouldForceTopRedirect()) {
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js?v=20261012165708").catch(() => {});
+    navigator.serviceWorker.register("sw.js?v=20261012170024").catch(() => {});
   });
 }
 </script>

@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="theme-color" content="#06080c" />
-<link rel="manifest" href="manifest.json?v=20261012165708" />
+<link rel="manifest" href="manifest.json?v=20261012170024" />
 <title>Keiba Top｜Ver2.01</title>
 
 <style>
@@ -1859,7 +1859,7 @@ function _fmtPct(num, den) {
 function _buildResultsSummary(date) {
   const day = (DATA.races && DATA.races[date]) ? DATA.races[date] : {};
 
-  const order = ["◉","◎","○","▲","△1","△2","△3","△4","△5","爆","無印"];
+  const order = ["◉","◎","○","▲","△1","△2","△3","△4","△5","無印"];
   const stats = {};
   for (const k of order) {
     stats[k] = _createEmptyMarkStat();
@@ -1879,7 +1879,6 @@ function _buildResultsSummary(date) {
 
         const markRaw = String((row && row["予想印"]) || "");
         const baseMark = _normalizeResultMark(markRaw);
-        const isBaku = markRaw.includes("爆");
 
         if (baseMark) {
           _updateMarkStat(stats[baseMark], rankNo);
@@ -1892,9 +1891,6 @@ function _buildResultsSummary(date) {
           _updateMarkStat(stats["無印"], rankNo);
         }
 
-        if (isBaku) {
-          _updateMarkStat(stats["爆"], rankNo);
-        }
       }
     }
   }
@@ -2758,7 +2754,7 @@ window.addEventListener("pageshow", (e) => {
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js?v=20261012165708").catch(() => {});
+    navigator.serviceWorker.register("sw.js?v=20261012170024").catch(() => {});
   });
 }
 </script>
