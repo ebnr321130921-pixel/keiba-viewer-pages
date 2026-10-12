@@ -408,6 +408,16 @@ td {border-color:var(--line)}
 .meta-wind-diagram {max-width:292px;margin:3px 0 4px}.meta-wind-diagram svg{width:100%;height:auto;display:block;overflow:visible}.wind-course-label{fill:var(--text);font:11px var(--viewer-font)}.wind-legend{fill:var(--muted);font:10px var(--viewer-font)}.wind-straight-vector{color:#729aca;stroke:currentColor;stroke-width:3}.wind-flow-vector{color:#88bb9e;stroke:currentColor;stroke-width:3}:root[data-display-theme="day"] .wind-straight-vector{color:#365b8b}:root[data-display-theme="day"] .wind-flow-vector{color:#34694d}
 
 .wind-straight-head{fill:#729aca}.wind-flow-head{fill:#88bb9e}:root[data-display-theme="day"] .wind-straight-head{fill:#365b8b}:root[data-display-theme="day"] .wind-flow-head{fill:#34694d}
+
+/* Badge fills/text never inherit mode-dependent surface or text colors. */
+.pill {background:#273241;color:#edf2f8;border-color:#566373}
+.pill.pred,.pill.pred.pred-turf {background:#214f35;color:#effff3;border-color:#73917b;text-shadow:none;box-shadow:none}
+.pill.pred.pred-dirt {background:#513b2c;color:#fff1e4;border-color:#a48b73;text-shadow:none;box-shadow:none}
+.pill.pred.pred-jump {background:#214750;color:#eaffff;border-color:#77a1a7;text-shadow:none;box-shadow:none}
+.pill.nk-on {background:#2b493a;color:#effff3;border-color:#789682}
+.pill.muted {background:#d2d7df;color:#344052;border-color:#aab3c1}
+.pills .pill-win5 {background:#243c61;color:#f2f6ff;border-color:#7189a9}
+.status-pill,.tag {background:#273241;color:#edf2f8;border-color:#566373}
 </style><script>(() => {
   const key='keibaDisplayTheme';
   let theme='night';
@@ -454,7 +464,7 @@ td {border-color:var(--line)}
       <!-- ★ 一括表示/非表示 -->
       <button id="toggleStatsBtn" class="btn" type="button">詳細を非表示</button>
 
-      <span class="pill">更新: 2026-10-12 09:27</span>
+      <span class="pill">更新: 2026-10-12 09:30</span>
     </div>
 
     <div id="list" style="margin-top:10px;"></div>
