@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>YOSOUKA Tipster Performance</title>
+  <title>予想家の成績｜Keiba Ver2.01</title>
   <style>
 :root {
   --bg0:#0b0f14;
@@ -311,7 +311,7 @@ select.pill option:checked {
     }
     .bar-meta .mut { color:var(--muted); }
   </style>
-<style>/* Purchase-panel palette, with the original prediction HTML font family. */
+<style id="keiba-shared-theme">/* Purchase-panel palette, with the original prediction HTML font family. */
 :root {
   color-scheme:dark;
   --viewer-font:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
@@ -323,10 +323,10 @@ select.pill option:checked {
 }
 :root[data-display-theme="day"] {
   color-scheme:light;
-  --ink:#263244; --paper:#aeb5bf; --purchase-card:#c5cbd3;
-  --bg:#aeb5bf; --panel:#c5cbd3; --panel2:#b8c0cb;
-  --text:#263244; --muted:#526074; --line:#969faa;
-  --navy-text:#263244; --navy-border:#969faa;
+  --ink:#172536; --paper:#929ca8; --purchase-card:#aab3bd;
+  --bg:#929ca8; --panel:#aab3bd; --panel2:#9fa9b5;
+  --text:#172536; --muted:#354459; --line:#778492;
+  --navy-text:#172536; --navy-border:#778492;
 }
 body {font-family:var(--viewer-font);background:var(--bg);color:var(--ink)}
 button,select,input,textarea {font-family:var(--viewer-font)}
@@ -431,7 +431,30 @@ td {border-color:var(--line)}
 .top-home .swipe-hint {font-size:10px}
 
 .viewer-refresh-hint{padding:7px 2px 0;text-align:right;font-size:10px;color:var(--muted);user-select:none;-webkit-user-select:none}
-</style><script>(() => {
+
+/* Modal surfaces use the same palette; dark fills must not keep day text. */
+.results-panel,.results-race,.results-body,.results-head,.results-detail,.results-hit-detail {
+  background:var(--panel);color:var(--text);border-color:var(--line);box-shadow:none;
+}
+.results-panel [style*="background:rgba"],.results-panel [style*="background: rgba"] {background:var(--panel2)!important;color:var(--text)}
+.results-table th {background:var(--panel2);color:var(--text);border-color:var(--line)}
+.results-table td,.results-title,.results-racename,.results-raceno {color:var(--text);border-color:var(--line)}
+.results-close {height:36px;min-width:36px;padding:0 8px;background:var(--panel2);color:var(--text);border-color:var(--line);border-radius:10px}
+.results-racepill {background:#273241;color:#edf2f8;border-color:#566373}
+.results-racepill.baba-turf {background:#214f35;color:#effff3}
+.results-racepill.baba-dirt {background:#513b2c;color:#fff1e4}
+.results-racepill.baba-jump {background:#214750;color:#eaffff}
+.analysis-link {display:inline-flex;align-items:center;justify-content:center;padding:0 12px;min-height:32px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--text);font-size:12px;text-decoration:none}
+.controls-row.viewer-row4 {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.companion-page {font-size:13px;line-height:1.5;font-weight:500;letter-spacing:normal;background:var(--bg);color:var(--text)}
+.companion-page .h1 {font-size:18px!important;font-weight:700!important;line-height:1.3!important}
+.companion-page .topbar,.companion-page .card,.companion-page .chead,.companion-page .cbody,.companion-page .candsWrap,.companion-page .bar,.companion-page .horse,.companion-page .t3card {background:var(--panel);color:var(--text);border-color:var(--line);box-shadow:none}
+.companion-page .hrow,.companion-page .hrow.winner,.companion-page .t3lines {background:var(--panel2);color:var(--text);border-color:var(--line)}
+.companion-page .hname,.companion-page .hmeta,.companion-page .ctitle,.companion-page .cmeta {color:var(--text)}
+.companion-page .sel,.companion-page .controls select,.companion-page .btn {height:40px;min-height:40px;border-radius:10px;background:var(--panel2);color:var(--text);border-color:var(--line);font-size:12px!important;font-weight:700!important;line-height:1.2!important}
+.companion-page .win5-actions {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.companion-page .win5-actions>* {display:flex;align-items:center;justify-content:center;width:100%;height:40px;min-width:0;text-decoration:none}
+</style><script id="keiba-shared-theme-js">(() => {
   const key='keibaDisplayTheme';
   let theme='night';
   try {if(localStorage.getItem(key)==='day') theme='day'} catch (_) {}
@@ -457,10 +480,10 @@ td {border-color:var(--line)}
   });
 })();
 </script></head>
-<body>
+<body class="companion-page">
   <div class="topbar">
     <div>
-      <h1 class="h1">YOSOUKA Tipster Performance</h1>
+      <h1 class="h1">予想家の成績</h1>
       <div class="row">
         <a class="btn" href="index.html#date=20261012">Topへ戻る</a>
       </div>
@@ -477,7 +500,7 @@ td {border-color:var(--line)}
       <!-- ★ 一括表示/非表示 -->
       <button id="toggleStatsBtn" class="btn" type="button">詳細を非表示</button>
 
-      <span class="pill">更新: 2026-10-12 16:24</span>
+      <span class="pill">更新: 2026-10-12 16:28</span>
     </div>
 
     <div id="list" style="margin-top:10px;"></div>
