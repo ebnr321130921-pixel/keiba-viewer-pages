@@ -1,4 +1,4 @@
-const CACHE_NAME = "keiba-viewer-20261012113914";
+const CACHE_NAME = "keiba-viewer-20261012114257";
 const CORE_ASSETS = [
   "./",
   "index.html",
