@@ -608,7 +608,129 @@ select.pill option:checked {
       color:var(--muted);
     }
   </style>
-</head>
+<style>/* Purchase-panel palette, with the original prediction HTML font family. */
+:root {
+  color-scheme:dark;
+  --viewer-font:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --ink:#e5e9ef; --paper:#080b10; --purchase-card:#121922;
+  --bg:#080b10; --panel:#121922; --panel2:#1b2430;
+  --text:#e5e9ef; --muted:#9aa6b6; --line:#2d3948;
+  --navy:#172f55; --navy-text:#e5e9ef; --navy-border:#2d3948;
+  --navy-focus:rgba(99,145,185,.16);
+}
+:root[data-display-theme="day"] {
+  color-scheme:light;
+  --ink:#263244; --paper:#aeb5bf; --purchase-card:#c5cbd3;
+  --bg:#aeb5bf; --panel:#c5cbd3; --panel2:#b8c0cb;
+  --text:#263244; --muted:#526074; --line:#969faa;
+  --navy-text:#263244; --navy-border:#969faa;
+}
+body {font-family:var(--viewer-font);background:var(--bg);color:var(--ink)}
+button,select,input,textarea {font-family:var(--viewer-font)}
+.topbar {background:var(--panel);border-color:var(--line);box-shadow:0 4px 20px rgba(23,34,56,.04)}
+.racename {background:var(--purchase-card);border-color:var(--line);color:var(--ink);box-shadow:none}
+.btn,.select,.controls .btn,.controls .select {background:var(--panel);color:var(--ink);border-color:var(--line);box-shadow:none}
+#predictBtn {background:#172f55;color:white;border-color:#172f55}
+#pack4cBtn {background:var(--panel);color:var(--ink)}
+.wrapper,.section,.rlist,.rrow,.rmain {color:var(--ink)}
+.section,.card,.card .c1,.card .grid,.tablewrap {background:var(--purchase-card);border-color:var(--line)}
+.section,.card {box-shadow:0 8px 26px rgba(23,34,56,.07)}
+.secthead {background:var(--panel2);border-color:var(--line)}
+.track {background:var(--panel);color:var(--ink);border-color:var(--line);box-shadow:none}
+.rrow {border-color:var(--line)}
+.rno.pending,.rno.done {background:var(--panel2);color:var(--text);border-color:var(--line);box-shadow:none}
+.rno.recommended {
+  background:linear-gradient(145deg,#214a39,#142d26);
+  color:#e4f3e8;border-color:#7db696;text-shadow:0 0 8px rgba(191,225,201,.15);
+  box-shadow:0 0 0 1px rgba(82,143,108,.18),0 0 16px rgba(54,138,88,.36),inset 0 1px 0 rgba(215,240,221,.17);
+  animation:recommendGlow 3s ease-in-out infinite;
+}
+@keyframes recommendGlow {
+  0%,100% {box-shadow:0 0 0 1px rgba(82,143,108,.18),0 0 12px rgba(54,138,88,.3),inset 0 1px 0 rgba(215,240,221,.17)}
+  50% {box-shadow:0 0 0 1px rgba(82,143,108,.26),0 0 20px rgba(54,138,88,.48),inset 0 1px 0 rgba(215,240,221,.2)}
+}
+@media(prefers-reduced-motion:reduce){.rno.recommended{animation:none}}
+.pill {box-shadow:none}
+.pill.pred,.pill.pred-turf,.pill.nk-on {background:#e8f1eb;color:#285e45;border-color:#bccfbe;animation:none;text-shadow:none;box-shadow:none}
+.pills .pill-win5 {background:var(--panel2);color:#244a7c;border-color:#c9d2dd}
+.pill.muted {background:var(--panel2);color:#6e7480;border-color:var(--line)}
+.sugouma-flag,.norikae-flag,.norikae-flag.nk-on {background:#edf4ef;color:#2f6149;border-color:#afc8b6;animation:none;text-shadow:none;box-shadow:none}
+.sugouma-flag::before,.norikae-flag::before {display:none}
+.card .hname,.card .v,.card .marks {color:var(--ink)}
+.card .k,.card .market-line,.stime,.meta {color:var(--muted)}
+.card .grid,.card .head,.card .c1 {border-color:var(--line)}
+.pack4c-wrap,#pack4cWrap {background:var(--panel);border-color:var(--line);box-shadow:none}
+.pack4c-title,.pack4c-dir {color:var(--ink)}
+.meta-reason {color:var(--ink);border-color:#719c80}
+.meta-reason-label {color:#476e56}
+.meta-wind-arrow {color:#2f7d61}
+.pack4c-mobile-board,.pack4c-mobile-head,.pack4c-mobile-lane-label {background:var(--panel2);border-color:var(--line);color:var(--muted)}
+.pack4c-mobile-cell {background:var(--panel);border-color:var(--line)}
+.pack4c-mobile-caption,.pack4c-note {color:var(--muted)}
+.pack4c-plot {background:var(--panel2);border-color:var(--line)}
+thead th {background:var(--panel2);color:var(--ink);border-color:var(--line)}
+td {border-color:var(--line)}
+.view-switch {display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin:0 0 10px}
+.view-switch a,.view-switch .theme-toggle {display:flex;align-items:center;justify-content:center;height:40px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);text-decoration:none;font-size:12px;font-weight:700}
+.view-switch a.active {background:#172f55;color:white;border-color:#172f55}
+@media(max-width:560px){html,body{background:var(--bg)}.topbar{background:var(--panel)}.racename{background:transparent}}
+
+.theme-toggle {height:40px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);padding:0 12px;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer}
+.topbar .controls-row > .btn,.topbar .controls-row > .select,.topbar .controls-row > .updatebar {
+  box-sizing:border-box;height:40px;min-height:40px;max-height:40px;padding:0 10px;border-radius:10px;font-size:12px;font-weight:700;
+}
+.topbar .controls-row > .btn {display:flex;align-items:center;justify-content:center;text-decoration:none}
+.topbar .controls-row > .btn.mobile-only {display:none}
+@media(max-width:560px){.topbar .controls-row > .btn.mobile-only{display:flex}}
+#raceSel,#dateSel {min-width:0}
+.meta-reason-label {color:#82b69a}.meta-wind-arrow {color:#90c5ac}
+.pack4c-mobile-head > div {color:var(--muted)}
+:root[data-display-theme="day"] .meta-reason-label,:root[data-display-theme="day"] .meta-wind-arrow {color:#2f6149}
+.sugouma-flag,.norikae-flag,.norikae-flag.nk-on {background:var(--panel2)!important;color:var(--text)!important;border-color:var(--line)!important;box-shadow:none!important}
+.card .head,.card .c1,.card .grid,.pack4c-mobile-head,.pack4c-mobile-lane-label {background:var(--panel);color:var(--text)}
+/* Same purchase-panel shapes, with black night / silver day surfaces. */
+.mode-card,.panel,.rules label,.race-card,.race-card.selected,.run-badge,.run-badge.live,.quiet,.view-tabs button,.form-grid input,.form-grid select,.history-heading select,.status-metrics div {
+  background:var(--panel);color:var(--text);border-color:var(--line);
+}
+.mode-card.active,.view-tabs button.active {background:#172f55;color:#e5e9ef}
+.mode-card.active span {color:#b6c6d8}
+.race-card .race-name,.form-grid label,.form-field>label {color:var(--muted)}
+.reservation,.track-block,.live-toggle {border-color:var(--line)}
+.tag,.status-pill {background:var(--panel2);color:var(--text)}
+.horse,.t3card,.horse-modal-card,details.t3details {background:var(--panel);border-color:var(--line);color:var(--text);box-shadow:none}
+.horse-modal-title,.t3title,.hname,.hmeta,.race-title,.h1 {color:var(--text)}
+:root {--bg0:var(--bg);--card:var(--panel);--pill:var(--panel2)}
+.controls select.pill,.row .btn {height:40px;min-height:40px;box-sizing:border-box;background:var(--panel);color:var(--text);border-color:var(--line)}
+
+.meta-wind-diagram {max-width:292px;margin:3px 0 4px}.meta-wind-diagram svg{width:100%;height:auto;display:block;overflow:visible}.wind-course-label{fill:var(--text);font:11px var(--viewer-font)}.wind-legend{fill:var(--muted);font:10px var(--viewer-font)}.wind-straight-vector{color:#729aca;stroke:currentColor;stroke-width:3}.wind-flow-vector{color:#88bb9e;stroke:currentColor;stroke-width:3}:root[data-display-theme="day"] .wind-straight-vector{color:#365b8b}:root[data-display-theme="day"] .wind-flow-vector{color:#34694d}
+
+.wind-straight-head{fill:#729aca}.wind-flow-head{fill:#88bb9e}:root[data-display-theme="day"] .wind-straight-head{fill:#365b8b}:root[data-display-theme="day"] .wind-flow-head{fill:#34694d}
+</style><script>(() => {
+  const key='keibaDisplayTheme';
+  let theme='night';
+  try {if(localStorage.getItem(key)==='day') theme='day'} catch (_) {}
+  const apply=()=>{
+    document.documentElement.dataset.displayTheme=theme;
+    document.querySelectorAll('.theme-toggle').forEach(b=>{
+      b.textContent=theme==='night'?'昼モード':'夜モード';
+      b.setAttribute('aria-label',theme==='night'?'昼モードへ切替':'夜モードへ切替');
+    });
+  };
+  apply();
+  document.addEventListener('DOMContentLoaded',()=>{
+    if(!document.querySelector('.theme-toggle')) {
+      const parent=document.querySelector('.view-switch')||document.querySelector('.topbar');
+      if(parent){const b=document.createElement('button');b.type='button';b.className='theme-toggle';parent.appendChild(b)}
+    }
+    document.querySelectorAll('.theme-toggle').forEach(b=>b.addEventListener('click',()=>{
+      theme=theme==='night'?'day':'night';
+      try{localStorage.setItem(key,theme)}catch(_){}
+      apply();
+    }));
+    apply();
+  });
+})();
+</script></head>
 <body>
   <div class="topbar">
     <div>
