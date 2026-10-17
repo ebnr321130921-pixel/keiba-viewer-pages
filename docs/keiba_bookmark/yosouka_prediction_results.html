@@ -784,6 +784,15 @@ td {border-color:var(--line)}
 .companion-prediction .vote-counts>.count-honmei::before {background:#f2b544}
 .companion-prediction .vote-counts>.count-otakara::before {background:#c5d8e9}
 .companion-performance .bar-meta,.companion-performance .bar-meta .mut {color:var(--text)}
+
+/* Keep horse number/name visible before the one compact tipster-voter button. */
+.companion-prediction .horse>.hrow {display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px}
+.companion-prediction .horse .hleft {display:grid;grid-template-columns:36px minmax(0,1fr);align-items:center;gap:8px;min-width:0}
+.companion-prediction .horse .hleft>.badge {width:36px;min-width:36px;flex-shrink:0}
+.companion-prediction .horse .hname {min-width:0;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;line-height:1.4}
+.companion-prediction .horse .hright {display:block;flex:0 0 auto;white-space:nowrap}
+.companion-prediction .tipster-voter-button {cursor:pointer;min-height:26px;padding:6px 10px;white-space:nowrap;font:inherit;line-height:1}
+.companion-prediction .tipster-voter-button:focus-visible {outline:2px solid #d7daa2;outline-offset:2px}
 </style><script id="keiba-shared-theme-js">(() => {
   const key='keibaDisplayTheme';
   let theme='night';
@@ -1078,17 +1087,12 @@ function renderOneRace(race) {
     const wakuFromData = parseInt(r["枠番"] || 0, 10);
     const waku = (wakuFromData >= 1 && wakuFromData <= 8) ? wakuFromData : (wakuMap[umaban] || 1);
 
-    const chips = [];
-
-    // チップは最小限（予想家印 + Top5ラベル + 総票/投票なし）
+    // Horse identity takes priority; only one compact voter button stays here.
     const tipsterMark = String(r["予想家印"] || "").trim();
-    if (tipsterMark) chips.push(`<span class="mkr top5">予想家 ${tipsterMark}</span>`);
-
-    const top5 = String(r["Top5_Label"] || "").trim();
-    if (top5) chips.push(`<span class="mkr top5">${top5}</span>`);
-
-    if (total > 0) chips.push(`<span class="mkr total">総票 ${total}</span>`);
-    else chips.push(`<span class="mkr none">総票 0</span>`);
+    const hasTipsterMark = tipsterMark && !["-", "—", "－"].includes(tipsterMark);
+    const markControl = hasTipsterMark
+      ? `<button type="button" class="mkr top5 tipster-voter-button" data-action="show-voters" aria-label="${escHtml(umaban)}番の予想家投票者を見る">予想家 ${escHtml(tipsterMark)}</button>`
+      : "";
 
     // バー：総票の相対（レース内最大を100%）
     // ※ total=0 は幅0%（枠だけ見せる）
@@ -1115,10 +1119,10 @@ function renderOneRace(race) {
       <div class="hrow">
         <div class="hleft">
           <div class="badge waku-${waku}">${r["馬番"]}</div>
-          <div class="hname">${tipsterMark ? `<span class="tipster-main-mark">${tipsterMark}</span>` : ""}${r["馬名"]}</div>
+          <div class="hname">${escHtml(r["馬名"] || "")}</div>
         </div>
         <div class="hright">
-          ${chips.join("")}
+          ${markControl}
         </div>
       </div>
 

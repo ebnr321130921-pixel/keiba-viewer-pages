@@ -487,6 +487,15 @@ td {border-color:var(--line)}
 .companion-prediction .vote-counts>.count-honmei::before {background:#f2b544}
 .companion-prediction .vote-counts>.count-otakara::before {background:#c5d8e9}
 .companion-performance .bar-meta,.companion-performance .bar-meta .mut {color:var(--text)}
+
+/* Keep horse number/name visible before the one compact tipster-voter button. */
+.companion-prediction .horse>.hrow {display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px}
+.companion-prediction .horse .hleft {display:grid;grid-template-columns:36px minmax(0,1fr);align-items:center;gap:8px;min-width:0}
+.companion-prediction .horse .hleft>.badge {width:36px;min-width:36px;flex-shrink:0}
+.companion-prediction .horse .hname {min-width:0;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;line-height:1.4}
+.companion-prediction .horse .hright {display:block;flex:0 0 auto;white-space:nowrap}
+.companion-prediction .tipster-voter-button {cursor:pointer;min-height:26px;padding:6px 10px;white-space:nowrap;font:inherit;line-height:1}
+.companion-prediction .tipster-voter-button:focus-visible {outline:2px solid #d7daa2;outline-offset:2px}
 </style><script id="keiba-shared-theme-js">(() => {
   const key='keibaDisplayTheme';
   let theme='night';
@@ -536,7 +545,7 @@ td {border-color:var(--line)}
       <!-- ★ 一括表示/非表示 -->
       <button id="toggleStatsBtn" class="btn" type="button">詳細を非表示</button>
 
-      <span class="pill">更新: 2026-10-17 12:09</span>
+      <span class="pill">更新: 2026-10-17 12:19</span>
     </div>
 
     <div id="list" style="margin-top:10px;"></div>
