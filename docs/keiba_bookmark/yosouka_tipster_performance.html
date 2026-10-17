@@ -353,8 +353,9 @@ button,select,input,textarea {font-family:var(--viewer-font)}
   50% {box-shadow:0 0 0 1px rgba(82,143,108,.26),0 0 20px rgba(54,138,88,.48),inset 0 1px 0 rgba(215,240,221,.2)}
 }
 @media(prefers-reduced-motion:reduce){.rno.recommended{animation:none}}
-.rno.recommended {display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
-.rno .recommendation-label {font-size:9px;line-height:1.2;font-weight:600;white-space:nowrap}
+.rno {box-sizing:border-box;display:inline-flex;flex-direction:row;align-items:center;justify-content:center;gap:4px;width:100%;height:36px;min-height:36px;padding:0 4px;line-height:1;white-space:nowrap}
+.rno.recommended {display:inline-flex;flex-direction:row;align-items:center;justify-content:center;gap:4px}
+.rno .recommendation-label {flex:0 0 auto;font-size:9px;line-height:1;font-weight:700;white-space:nowrap}
 .rno.recommended.tier-normal {border-color:#648775;background:linear-gradient(145deg,#1b352a,#15251f);box-shadow:inset 0 1px 0 #c3dcc818;animation:none}
 .rno.recommended.tier-ultimate {border-color:#b7c77d;color:#f2f6d7;background:linear-gradient(145deg,#2b503a,#142f26);box-shadow:0 0 20px #64b98566,inset 0 1px 0 #dbe7ad33}
 .pill {box-shadow:none}
@@ -545,7 +546,7 @@ td {border-color:var(--line)}
       <!-- ★ 一括表示/非表示 -->
       <button id="toggleStatsBtn" class="btn" type="button">詳細を非表示</button>
 
-      <span class="pill">更新: 2026-10-17 12:19</span>
+      <span class="pill">更新: 2026-10-17 12:30</span>
     </div>
 
     <div id="list" style="margin-top:10px;"></div>
