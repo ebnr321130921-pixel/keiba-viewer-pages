@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>YOSOUKA Tipster Performance</title>
+  <title>予想家の成績｜Keiba Ver2.08</title>
   <style>
 :root {
   --bg0:#0b0f14;
@@ -311,7 +311,7 @@ select.pill option:checked {
     }
     .bar-meta .mut { color:var(--muted); }
   </style>
-<style>/* Purchase-panel palette, with the original prediction HTML font family. */
+<style id="keiba-shared-theme">/* Purchase-panel palette, with the original prediction HTML font family. */
 :root {
   color-scheme:dark;
   --viewer-font:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
@@ -487,7 +487,7 @@ td {border-color:var(--line)}
 .companion-prediction .vote-counts>.count-honmei::before {background:#f2b544}
 .companion-prediction .vote-counts>.count-otakara::before {background:#c5d8e9}
 .companion-performance .bar-meta,.companion-performance .bar-meta .mut {color:var(--text)}
-</style><script>(() => {
+</style><script id="keiba-shared-theme-js">(() => {
   const key='keibaDisplayTheme';
   let theme='night';
   try {if(localStorage.getItem(key)==='day') theme='day'} catch (_) {}
@@ -513,13 +513,16 @@ td {border-color:var(--line)}
   });
 })();
 </script></head>
-<body>
+<body class="companion-page companion-performance">
   <div class="topbar">
     <div>
-      <h1 class="h1">YOSOUKA Tipster Performance</h1>
-      <div class="row">
-        <a class="btn" href="index.html#date=20261018">Topへ戻る</a>
-      </div>
+      <h1 class="h1">予想家の成績</h1>
+      <nav class="row yosouka-navigation" aria-label="予想家の成績の操作">
+    <a class="btn" id="backBtn" href="index.html#date=20261018">Topへ戻る</a>
+    <a class="btn" id="viewerBtn" href="keiba_viewer.html">出馬表</a>
+    <a class="btn" href="yosouka_prediction_results.html">予想</a>
+    <button class="theme-toggle" type="button">昼モード</button>
+  </nav>
     </div>
   </div>
 
@@ -533,7 +536,7 @@ td {border-color:var(--line)}
       <!-- ★ 一括表示/非表示 -->
       <button id="toggleStatsBtn" class="btn" type="button">詳細を非表示</button>
 
-      <span class="pill">更新: 2026-10-17 12:06</span>
+      <span class="pill">更新: 2026-10-17 12:09</span>
     </div>
 
     <div id="list" style="margin-top:10px;"></div>
