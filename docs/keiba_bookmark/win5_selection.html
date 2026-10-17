@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>WIN5 選定</title>
+<style>
+/* Purchase-panel palette, with the original prediction HTML font family. */
+:root {
+  color-scheme:dark;
+  --viewer-font:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --ink:#e5e9ef; --paper:#080b10; --purchase-card:#121922;
+  --bg:#080b10; --panel:#121922; --panel2:#1b2430;
+  --text:#e5e9ef; --muted:#9aa6b6; --line:#2d3948;
+  --navy:#172f55; --navy-text:#e5e9ef; --navy-border:#2d3948;
+  --navy-focus:rgba(99,145,185,.16);
+}
+:root[data-display-theme="day"] {
+  color-scheme:light;
+  --ink:#172536; --paper:#929ca8; --purchase-card:#aab3bd;
+  --bg:#929ca8; --panel:#aab3bd; --panel2:#9fa9b5;
+  --text:#172536; --muted:#354459; --line:#778492;
+  --navy-text:#172536; --navy-border:#778492;
+}
+body {font-family:var(--viewer-font);background:var(--bg);color:var(--ink)}
+button,select,input,textarea {font-family:var(--viewer-font)}
+.topbar {background:var(--panel);border-color:var(--line);box-shadow:0 4px 20px rgba(23,34,56,.04)}
+.racename {background:var(--purchase-card);border-color:var(--line);color:var(--ink);box-shadow:none}
+.btn,.select,.controls .btn,.controls .select {background:var(--panel);color:var(--ink);border-color:var(--line);box-shadow:none}
+#predictBtn {background:#172f55;color:white;border-color:#172f55}
+#pack4cBtn {background:var(--panel);color:var(--ink)}
+.wrapper,.section,.rlist,.rrow,.rmain {color:var(--ink)}
+.section,.card,.card .c1,.card .grid,.tablewrap {background:var(--purchase-card);border-color:var(--line)}
+.section,.card {box-shadow:0 8px 26px rgba(23,34,56,.07)}
+.secthead {background:var(--panel2);border-color:var(--line)}
+.track {background:var(--panel);color:var(--ink);border-color:var(--line);box-shadow:none}
+.rrow {border-color:var(--line)}
+.rno.pending,.rno.done {background:var(--panel2);color:var(--text);border-color:var(--line);box-shadow:none}
+.rno.recommended {
+  background:linear-gradient(145deg,#214a39,#142d26);
+  color:#e4f3e8;border-color:#7db696;text-shadow:0 0 8px rgba(191,225,201,.15);
+  box-shadow:0 0 0 1px rgba(82,143,108,.18),0 0 16px rgba(54,138,88,.36),inset 0 1px 0 rgba(215,240,221,.17);
+  animation:recommendGlow 3s ease-in-out infinite;
+}
+@keyframes recommendGlow {
+  0%,100% {box-shadow:0 0 0 1px rgba(82,143,108,.18),0 0 12px rgba(54,138,88,.3),inset 0 1px 0 rgba(215,240,221,.17)}
+  50% {box-shadow:0 0 0 1px rgba(82,143,108,.26),0 0 20px rgba(54,138,88,.48),inset 0 1px 0 rgba(215,240,221,.2)}
+}
+@media(prefers-reduced-motion:reduce){.rno.recommended{animation:none}}
+.rno {box-sizing:border-box;display:inline-flex;flex-direction:row;align-items:center;justify-content:center;gap:4px;width:100%;height:36px;min-height:36px;padding:0 4px;line-height:1;white-space:nowrap}
+.rno.recommended {display:inline-flex;flex-direction:row;align-items:center;justify-content:center;gap:4px}
+.rno .recommendation-label {flex:0 0 auto;font-size:9px;line-height:1;font-weight:700;white-space:nowrap}
+.rno.recommended.tier-normal {border-color:#648775;background:linear-gradient(145deg,#1b352a,#15251f);box-shadow:inset 0 1px 0 #c3dcc818;animation:none}
+.rno.recommended.tier-ultimate {border-color:#b7c77d;color:#f2f6d7;background:linear-gradient(145deg,#2b503a,#142f26);box-shadow:0 0 20px #64b98566,inset 0 1px 0 #dbe7ad33}
+.pill {box-shadow:none}
+.pill.pred,.pill.pred-turf,.pill.nk-on {background:#e8f1eb;color:#285e45;border-color:#bccfbe;animation:none;text-shadow:none;box-shadow:none}
+.pills .pill-win5 {background:var(--panel2);color:#244a7c;border-color:#c9d2dd}
+.pill.muted {background:var(--panel2);color:#6e7480;border-color:var(--line)}
+.sugouma-flag,.norikae-flag,.norikae-flag.nk-on {background:#edf4ef;color:#2f6149;border-color:#afc8b6;animation:none;text-shadow:none;box-shadow:none}
+.sugouma-flag::before,.norikae-flag::before {display:none}
+.card .hname,.card .v,.card .marks {color:var(--ink)}
+.card .k,.card .market-line,.stime,.meta {color:var(--muted)}
+.card .grid,.card .head,.card .c1 {border-color:var(--line)}
+.pack4c-wrap,#pack4cWrap {background:var(--panel);border-color:var(--line);box-shadow:none}
+.pack4c-title,.pack4c-dir {color:var(--ink)}
+.meta-reason {color:var(--ink);border-color:#719c80}
+.meta-reason-label {color:#476e56}
+.meta-wind-arrow {color:#2f7d61}
+.pack4c-mobile-board,.pack4c-mobile-head,.pack4c-mobile-lane-label {background:var(--panel2);border-color:var(--line);color:var(--muted)}
+.pack4c-mobile-cell {background:var(--panel);border-color:var(--line)}
+.pack4c-mobile-caption,.pack4c-note {color:var(--muted)}
+.pack4c-plot {background:var(--panel2);border-color:var(--line)}
+thead th {background:var(--panel2);color:var(--ink);border-color:var(--line)}
+td {border-color:var(--line)}
+.view-switch {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 10px}
+.view-switch a,.view-switch .theme-toggle {display:flex;align-items:center;justify-content:center;height:40px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);text-decoration:none;font-size:12px;font-weight:700}
+.view-switch a.active {background:#172f55;color:white;border-color:#172f55}
+@media(max-width:560px){html,body{background:var(--bg)}.topbar{background:var(--panel)}.racename{background:transparent}}
+
+.theme-toggle {height:40px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);padding:0 12px;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer}
+.topbar .controls-row > .btn,.topbar .controls-row > .select,.topbar .controls-row > .updatebar {
+  box-sizing:border-box;height:40px;min-height:40px;max-height:40px;padding:0 10px;border-radius:10px;font-size:12px;font-weight:700;
+}
+.topbar .controls-row > .btn {display:flex;align-items:center;justify-content:center;text-decoration:none}
+.topbar .controls-row > .btn.mobile-only {display:none}
+@media(max-width:560px){.topbar .controls-row > .btn.mobile-only{display:flex}}
+#raceSel,#dateSel {min-width:0}
+.meta-reason-label {color:#82b69a}.meta-wind-arrow {color:#90c5ac}
+.pack4c-mobile-head > div {color:var(--muted)}
+:root[data-display-theme="day"] .meta-reason-label,:root[data-display-theme="day"] .meta-wind-arrow {color:#2f6149}
+.sugouma-flag,.norikae-flag,.norikae-flag.nk-on {background:var(--panel2)!important;color:var(--text)!important;border-color:var(--line)!important;box-shadow:none!important}
+.card .head,.card .c1,.card .grid,.pack4c-mobile-head,.pack4c-mobile-lane-label {background:var(--panel);color:var(--text)}
+/* Same purchase-panel shapes, with black night / silver day surfaces. */
+.mode-card,.panel,.rules label,.race-card,.race-card.selected,.run-badge,.run-badge.live,.quiet,.view-tabs button,.form-grid input,.form-grid select,.history-heading select,.status-metrics div {
+  background:var(--panel);color:var(--text);border-color:var(--line);
+}
+.mode-card.active,.view-tabs button.active {background:#172f55;color:#e5e9ef}
+.mode-card.active span {color:#b6c6d8}
+.race-card .race-name,.form-grid label,.form-field>label {color:var(--muted)}
+.reservation,.track-block,.live-toggle {border-color:var(--line)}
+.tag,.status-pill {background:var(--panel2);color:var(--text)}
+.horse,.t3card,.horse-modal-card,details.t3details {background:var(--panel);border-color:var(--line);color:var(--text);box-shadow:none}
+.horse-modal-title,.t3title,.hname,.hmeta,.race-title,.h1 {color:var(--text)}
+:root {--bg0:var(--bg);--card:var(--panel);--pill:var(--panel2)}
+.controls select.pill,.row .btn {height:40px;min-height:40px;box-sizing:border-box;background:var(--panel);color:var(--text);border-color:var(--line)}
+
+.meta-wind-diagram {max-width:292px;margin:3px 0 4px}.meta-wind-diagram svg{width:100%;height:auto;display:block;overflow:visible}.wind-course-label{fill:var(--text);font:11px var(--viewer-font)}.wind-legend{fill:var(--muted);font:10px var(--viewer-font)}.wind-straight-vector{color:#729aca;stroke:currentColor;stroke-width:3}.wind-flow-vector{color:#88bb9e;stroke:currentColor;stroke-width:3}:root[data-display-theme="day"] .wind-straight-vector{color:#365b8b}:root[data-display-theme="day"] .wind-flow-vector{color:#34694d}
+
+.wind-straight-head{fill:#729aca}.wind-flow-head{fill:#88bb9e}:root[data-display-theme="day"] .wind-straight-head{fill:#365b8b}:root[data-display-theme="day"] .wind-flow-head{fill:#34694d}
+
+/* Badge fills/text never inherit mode-dependent surface or text colors. */
+.pill {background:#273241;color:#edf2f8;border-color:#566373}
+.pill.pred,.pill.pred.pred-turf {background:#214f35;color:#effff3;border-color:#73917b;text-shadow:none;box-shadow:none}
+.pill.pred.pred-dirt {background:#513b2c;color:#fff1e4;border-color:#a48b73;text-shadow:none;box-shadow:none}
+.pill.pred.pred-jump {background:#214750;color:#eaffff;border-color:#77a1a7;text-shadow:none;box-shadow:none}
+.pill.nk-on {background:#2b493a;color:#effff3;border-color:#789682}
+.pill.muted {background:#d2d7df;color:#344052;border-color:#aab3c1}
+.pills .pill-win5 {background:#243c61;color:#f2f6ff;border-color:#7189a9}
+.status-pill,.tag {background:#273241;color:#edf2f8;border-color:#566373}
+
+#updateBadge{display:none}.topbar .controls-row.top-row2{grid-template-columns:repeat(4,minmax(0,1fr))}.topbar .controls-row.top-row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+
+.secthead .track{background:#273241;color:#edf2f8;border-color:#566373;text-shadow:none;box-shadow:none}.secthead .meta{color:var(--muted)}
+
+/* Top has one evenly spaced row of four actions in both layouts. */
+.top-home .top-actions,.yosouka-navigation {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:100%}
+.top-home .top-actions > *,.yosouka-navigation > * {box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:100%;min-width:0;height:40px;min-height:40px;margin:0;padding:0 4px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);font-size:12px;font-weight:700;white-space:nowrap;text-decoration:none}
+.top-home .controls-row {grid-template-columns:minmax(0,1fr)}
+.top-home .top-update-line {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px 10px;padding:12px 2px 4px;color:var(--muted);font-size:11px;user-select:none;-webkit-user-select:none}
+.top-home .swipe-hint {font-size:10px}
+
+.viewer-refresh-hint{padding:7px 2px 0;text-align:right;font-size:10px;color:var(--muted);user-select:none;-webkit-user-select:none}
+
+/* Modal surfaces use the same palette; dark fills must not keep day text. */
+.results-panel,.results-race,.results-body,.results-head,.results-detail,.results-hit-detail {
+  background:var(--panel);color:var(--text);border-color:var(--line);box-shadow:none;
+}
+.results-panel [style*="background:rgba"],.results-panel [style*="background: rgba"] {background:var(--panel2)!important;color:var(--text)}
+.results-table th {background:var(--panel2);color:var(--text);border-color:var(--line)}
+.results-table td,.results-title,.results-racename,.results-raceno {color:var(--text);border-color:var(--line)}
+.results-summary {background:var(--panel2);color:var(--text);border-color:var(--line);box-shadow:none}
+.results-markcard,.results-rankbox {background:var(--panel);color:var(--text);border-color:var(--line);box-shadow:none}
+.results-markname,.results-markpct .main,.results-barvalue,.results-rankbox .v,.results-summary-title {color:var(--text)}
+.results-bartrack {background:var(--line);box-shadow:none}
+.results-markbadge {background:#273241;color:#edf2f8;border-color:#566373;box-shadow:none}
+.results-markbadge.mk-honmei {background:#574a24;color:#ffebb0;border-color:#b79c51;box-shadow:none}
+.results-markbadge.mk-taikou {background:#46505c;color:#eef3f8;border-color:#8796a8}
+.results-markbadge.mk-tanana {background:#634733;color:#ffe0bf;border-color:#ad8669}
+.results-markbadge.mk-renka {background:#314d71;color:#eaf2ff;border-color:#7692b5}
+.results-markbadge.mk-none {background:#273241;color:#edf2f8;border-color:#566373}
+.results-close {height:36px;min-width:36px;padding:0 8px;background:var(--panel2);color:var(--text);border-color:var(--line);border-radius:10px}
+.results-racepill {background:#273241;color:#edf2f8;border-color:#566373}
+.results-racepill.baba-turf {background:#214f35;color:#effff3}
+.results-racepill.baba-dirt {background:#513b2c;color:#fff1e4}
+.results-racepill.baba-jump {background:#214750;color:#eaffff}
+.analysis-link {display:inline-flex;align-items:center;justify-content:center;padding:0 12px;min-height:32px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--text);font-size:12px;text-decoration:none}
+.controls-row.viewer-row4 {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.companion-page {font-size:13px;line-height:1.5;font-weight:500;letter-spacing:normal;background:var(--bg);color:var(--text)}
+.companion-page .h1 {font-size:18px!important;font-weight:700!important;line-height:1.3!important}
+.companion-page .topbar,.companion-page .card,.companion-page .chead,.companion-page .cbody,.companion-page .candsWrap,.companion-page .bar,.companion-page .horse,.companion-page .t3card {background:var(--panel);color:var(--text);border-color:var(--line);box-shadow:none}
+.companion-page .hrow,.companion-page .hrow.winner,.companion-page .t3lines {background:var(--panel2);color:var(--text);border-color:var(--line)}
+.companion-page .hname,.companion-page .hmeta,.companion-page .ctitle,.companion-page .cmeta {color:var(--text)}
+.companion-page .sel,.companion-page .controls select,.companion-page .btn {height:40px;min-height:40px;border-radius:10px;background:var(--panel2);color:var(--text);border-color:var(--line);font-size:12px!important;font-weight:700!important;line-height:1.2!important}
+.companion-page .win5-actions {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.companion-page .topbar .yosouka-navigation {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;flex-wrap:nowrap}
+.companion-page .topbar>div {width:100%;min-width:0}
+.companion-page .win5-actions>* {display:flex;align-items:center;justify-content:center;width:100%;height:40px;min-width:0;text-decoration:none}
+.companion-page .bar-meta,.companion-page .t3item,.companion-page .t3nm,.companion-page .mkr,.companion-page .empty {color:var(--text)}
+.companion-page .statcard,.companion-page .barwrap,.companion-page .vbarwrap,.companion-page .t3pick {background:var(--panel2);border-color:var(--line);box-shadow:none}
+.companion-prediction .mkr,.companion-page .honmei,.companion-page .otakara,.companion-page .total,.companion-page .top5chip {background:#273241;color:#edf2f8;border-color:#566373}
+
+/* Tipster charts only: generic honmei/otakara badges must not mask the fills. */
+.companion-prediction .vbarwrap,.companion-performance .barwrap {background:#172331;border-color:#6a7c91}
+.companion-prediction .vbar,.companion-performance .barwrap>.bar {background:transparent}
+.companion-prediction .vbar>.vseg.honmei,.companion-performance .bar>.seg.honmei {background:linear-gradient(90deg,#f2b544,#ffe18a)}
+.companion-prediction .vbar>.vseg.otakara,.companion-performance .bar>.seg.otakara {background:linear-gradient(90deg,#a9c4df,#e2edf7)}
+.companion-prediction .mkr.total {background:#173c32;color:#e8fff3;border-color:#70aa91}
+.companion-prediction .mkr.none {background:#273448;color:#edf2f8;border-color:#71849a}
+.companion-prediction .vote-counts {display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:6px;color:var(--text);font-size:12px;font-weight:650;font-variant-numeric:tabular-nums;line-height:1.5}
+.companion-prediction .vote-counts>span {display:inline-flex;align-items:center;gap:5px;color:var(--text)}
+.companion-prediction .vote-counts>span::before {content:"";display:inline-block;width:8px;height:8px;border-radius:2px}
+.companion-prediction .vote-counts>.count-honmei::before {background:#f2b544}
+.companion-prediction .vote-counts>.count-otakara::before {background:#c5d8e9}
+.companion-performance .bar-meta,.companion-performance .bar-meta .mut {color:var(--text)}
+
+/* Keep horse number/name visible before the one compact tipster-voter button. */
+.companion-prediction .horse>.hrow {display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px}
+.companion-prediction .horse .hleft {display:grid;grid-template-columns:36px minmax(0,1fr);align-items:center;gap:8px;min-width:0}
+.companion-prediction .horse .hleft>.badge {width:36px;min-width:36px;flex-shrink:0}
+.companion-prediction .horse .hname {min-width:0;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;line-height:1.4}
+.companion-prediction .horse .hright {display:block;flex:0 0 auto;white-space:nowrap}
+.companion-prediction .tipster-voter-button {cursor:pointer;min-height:26px;padding:6px 10px;white-space:nowrap;font:inherit;line-height:1}
+.companion-prediction .tipster-voter-button:focus-visible {outline:2px solid #d7daa2;outline-offset:2px}
+
+*{box-sizing:border-box}body{margin:0}.win5-shell{max-width:1060px;margin:auto;padding:calc(14px + env(safe-area-inset-top,0px)) 12px 28px}.win5-nav,.win5-controls,.win5-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.win5-nav>*{display:flex;align-items:center;justify-content:center;text-decoration:none}.win5-nav>*,button,select{min-width:0;min-height:40px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);font:inherit;font-size:12px;padding:6px;font-weight:700}.win5-nav .active,.primary{background:#172f55;color:#f1f4fa}.win5-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:16px 0 12px}.win5-heading h1{margin:0;font-size:21px}.stage{font-size:11px;padding:5px 9px;border:1px solid #8d784e;border-radius:99px;background:#443923;color:#ffe9af}.win5-controls label{min-width:0;color:var(--muted);font-size:11px;display:grid;gap:5px}.win5-controls label>*{width:100%}.win5-controls>button{align-self:end}.muted{font-size:11px;color:var(--muted);line-height:1.7}.message{font-size:12px;line-height:1.6;min-height:20px;margin:10px 0}.message.error{color:#ffaaa5}:root[data-display-theme="day"] .message.error{color:#852d31}.win5-summary{padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);margin:12px 0;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.win5-summary b{font-size:17px}.win5-legs{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:10px}.win5-leg{border:1px solid var(--line);border-radius:13px;padding:12px;background:var(--purchase-card);min-width:0}.win5-leg h2{font-size:14px;margin:0 0 5px}.win5-leg p{font-size:11px;color:var(--muted);margin:4px 0 10px}.win5-horses{display:grid;gap:5px}.win5-horse{display:grid;grid-template-columns:28px 22px minmax(0,1fr) 48px;align-items:center;gap:5px;text-align:left;border-radius:8px;padding:6px;min-height:40px;font-size:12px;font-weight:500}.win5-horse[aria-pressed="true"]{border-color:#90b59d;background:#19372b;color:#ecfff1;box-shadow:inset 0 0 0 1px #90b59d}.win5-horse .num{display:grid;place-items:center;height:27px;border:1px solid #80909f;border-radius:6px;font-weight:800}.win5-horse .name{min-width:0;overflow-wrap:anywhere}.win5-horse .prob{text-align:right;font-size:11px}.win5-horse .mark{font-size:12px;text-align:center}.win5-actions{margin-top:12px;grid-template-columns:repeat(3,minmax(0,1fr))}.win5-actions a{display:flex;align-items:center;justify-content:center;min-height:40px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);font-size:12px;text-decoration:none;text-align:center;padding:6px}button:disabled{opacity:.5;cursor:default}.empty{padding:28px 8px;text-align:center;color:var(--muted)}.embedded .win5-nav,.embedded .win5-heading{display:none}.embedded .win5-shell{padding:4px 0 20px}small{font-size:11px}[hidden]{display:none!important}@media(max-width:560px){.win5-controls>*{font-size:11px}.win5-legs{grid-template-columns:minmax(0,1fr)}.win5-nav>*{font-size:11px}.win5-shell{padding-left:10px;padding-right:10px}}
+</style><script>(() => {
+  const key='keibaDisplayTheme';
+  let theme='night';
+  try {if(localStorage.getItem(key)==='day') theme='day'} catch (_) {}
+  const apply=()=>{
+    document.documentElement.dataset.displayTheme=theme;
+    document.querySelectorAll('.theme-toggle').forEach(b=>{
+      b.textContent=theme==='night'?'昼モード':'夜モード';
+      b.setAttribute('aria-label',theme==='night'?'昼モードへ切替':'夜モードへ切替');
+    });
+  };
+  apply();
+  document.addEventListener('DOMContentLoaded',()=>{
+    if(!document.querySelector('.theme-toggle')) {
+      const parent=document.querySelector('.view-switch')||document.querySelector('.topbar');
+      if(parent){const b=document.createElement('button');b.type='button';b.className='theme-toggle';parent.appendChild(b)}
+    }
+    document.querySelectorAll('.theme-toggle').forEach(b=>b.addEventListener('click',()=>{
+      theme=theme==='night'?'day':'night';
+      try{localStorage.setItem(key,theme)}catch(_){}
+      apply();
+    }));
+    apply();
+  });
+})();
+</script></head>
+<body><main class="win5-shell">
+<nav class="win5-nav" aria-label="画面切替"><a href="keiba_viewer.html">競馬予測</a><a href="win5.html">WIN5予測</a><a href="purchase_mobile.html">自動購入</a><button class="theme-toggle" type="button">昼モード</button></nav>
+<div class="win5-heading"><h1>WIN5 選定</h1><span class="stage">選定のみ</span></div>
+<div class="win5-controls"><label>対象日<select id="win5Date"></select></label><label>選定モデル<select id="win5Model"><option value="manual">手動</option><option value="current-win-preview-v1">研究・勝率順</option></select></label><label>点数上限<select id="win5Budget"><option value="30">30点</option><option value="50">50点</option><option value="100">100点</option></select></label><button id="win5Generate" type="button">候補選定</button></div>
+<p id="win5Meta" class="muted"></p><p id="win5History" class="muted" hidden></p><p id="win5Message" class="message" role="status"></p>
+<section id="win5Summary" class="win5-summary" aria-live="polite"></section><section id="win5Legs" class="win5-legs" aria-label="WIN5対象5レース"></section>
+<div class="win5-actions"><button id="win5Save" class="primary" type="button">下書き保存</button><a id="win5Info" target="_blank" rel="noopener noreferrer">WIN5情報</a><a id="win5Login" target="_blank" rel="noopener noreferrer">IPATログイン</a></div>
+<p class="muted">選定モデルは未採用です。下書きはこのブラウザに保存します。購入予約・投票には送信しません。</p>
+</main><script>
+const WIN5_CATALOG={"schema": "win5-selection-v1", "captured_at": "2026-10-17T14:58:54.355099+09:00", "dates": ["20261017", "20261018"], "days": {"20261017": {"status": "ready", "date": "20261017", "legs": [{"leg": 1, "track": "京都", "race_no": 10, "race_name": "清滝特別 2勝", "start_time": "14:50", "start_at": "2026-10-17T14:50:00+09:00", "horses": [{"horse_no": 1, "horse_name": "アメジストブラック", "frame": 1, "mark": "△4", "p_win": 0.0145815646677968, "withdrawn": false}, {"horse_no": 2, "horse_name": "エイシンビーコン", "frame": 2, "mark": "▲", "p_win": 0.1440085837240734, "withdrawn": false}, {"horse_no": 3, "horse_name": "メイショウナルカミ", "frame": 3, "mark": "△2", "p_win": 0.0781829657385169, "withdrawn": false}, {"horse_no": 4, "horse_name": "アルベリック", "frame": 4, "mark": "", "p_win": 0.0058668936645417, "withdrawn": false}, {"horse_no": 5, "horse_name": "アットアブラスト", "frame": 5, "mark": "△5", "p_win": 0.0070538684997591, "withdrawn": false}, {"horse_no": 6, "horse_name": "チェルヴァーラ", "frame": 6, "mark": "◉", "p_win": 0.3111824244294844, "withdrawn": false}, {"horse_no": 7, "horse_name": "トリニティ", "frame": 7, "mark": "○", "p_win": 0.2696289976885648, "withdrawn": false}, {"horse_no": 8, "horse_name": "エアビッグマム", "frame": 8, "mark": "△3", "p_win": 0.0477648812298828, "withdrawn": false}, {"horse_no": 9, "horse_name": "セイキュート", "frame": 8, "mark": "△1", "p_win": 0.1217298203573795, "withdrawn": false}]}, {"leg": 2, "track": "東京", "race_no": 10, "race_name": "伊勢佐木ステークス 3勝", "start_time": "15:01", "start_at": "2026-10-17T15:01:00+09:00", "horses": [{"horse_no": 1, "horse_name": "インペリアルライン", "frame": 1, "mark": "△4", "p_win": 0.0468345913466098, "withdrawn": false}, {"horse_no": 2, "horse_name": "インジケーター", "frame": 2, "mark": "", "p_win": 0.0084194266466896, "withdrawn": false}, {"horse_no": 3, "horse_name": "ビービーアジャイル", "frame": 3, "mark": "◎", "p_win": 0.2819965528852416, "withdrawn": false}, {"horse_no": 4, "horse_name": "ライノ", "frame": 3, "mark": "○", "p_win": 0.1442726652171774, "withdrawn": false}, {"horse_no": 5, "horse_name": "ヴァンドーム", "frame": 4, "mark": "△2", "p_win": 0.0924502476591655, "withdrawn": false}, {"horse_no": 6, "horse_name": "モズロックンロール", "frame": 4, "mark": "", "p_win": 0.0102954440175543, "withdrawn": false}, {"horse_no": 7, "horse_name": "シャルクハフト", "frame": 5, "mark": "", "p_win": 0.0260593956833267, "withdrawn": false}, {"horse_no": 8, "horse_name": "ヴァナルガンド", "frame": 5, "mark": "", "p_win": 0.0193425101936554, "withdrawn": false}, {"horse_no": 9, "horse_name": "タンゴバイラリン", "frame": 6, "mark": "", "p_win": 0.0127684256116358, "withdrawn": false}, {"horse_no": 10, "horse_name": "ロングウェイホーム", "frame": 6, "mark": "▲", "p_win": 0.1125316917747776, "withdrawn": false}, {"horse_no": 11, "horse_name": "オメガタキシード", "frame": 7, "mark": "△5", "p_win": 0.0432707103308463, "withdrawn": false}, {"horse_no": 12, "horse_name": "ロードブレイズ", "frame": 7, "mark": "", "p_win": 0.0253978364028061, "withdrawn": false}, {"horse_no": 13, "horse_name": "タイセイカイザー", "frame": 8, "mark": "△1", "p_win": 0.1102252138333337, "withdrawn": false}, {"horse_no": 14, "horse_name": "メイショウフジ", "frame": 8, "mark": "△3", "p_win": 0.0661352883971797, "withdrawn": false}]}, {"leg": 3, "track": "新潟", "race_no": 11, "race_name": "北陸ステークス 3勝", "start_time": "15:15", "start_at": "2026-10-17T15:15:00+09:00", "horses": [{"horse_no": 1, "horse_name": "アタリダイキチ", "frame": 1, "mark": "", "p_win": 0.0459600412188347, "withdrawn": false}, {"horse_no": 2, "horse_name": "ロードマイライフ", "frame": 1, "mark": "", "p_win": 0.0469400103443306, "withdrawn": false}, {"horse_no": 3, "horse_name": "ミルテンベルク", "frame": 2, "mark": "△4", "p_win": 0.0549773336114215, "withdrawn": false}, {"horse_no": 4, "horse_name": "ブラックケリー", "frame": 2, "mark": "", "p_win": 0.0192174535439204, "withdrawn": false}, {"horse_no": 5, "horse_name": "メイショウピース", "frame": 3, "mark": "△5", "p_win": 0.0489596833512951, "withdrawn": false}, {"horse_no": 6, "horse_name": "ベイビーキッス", "frame": 3, "mark": "○", "p_win": 0.1110213290353272, "withdrawn": false}, {"horse_no": 7, "horse_name": "ウナギノボリ", "frame": 4, "mark": "", "p_win": 0.0059359351134779, "withdrawn": false}, {"horse_no": 8, "horse_name": "ハッピーエンジェル", "frame": 4, "mark": "△2", "p_win": 0.0739524665514592, "withdrawn": false}, {"horse_no": 9, "horse_name": "ハートホイップ", "frame": 5, "mark": "", "p_win": 0.0144609711861661, "withdrawn": false}, {"horse_no": 10, "horse_name": "ヴェサリウス", "frame": 5, "mark": "", "p_win": 0.0418042712562486, "withdrawn": false}, {"horse_no": 11, "horse_name": "ダークエクリプス", "frame": 6, "mark": "", "p_win": 0.0113661654971147, "withdrawn": false}, {"horse_no": 12, "horse_name": "シカゴスティング", "frame": 6, "mark": "△3", "p_win": 0.0522079091533651, "withdrawn": false}, {"horse_no": 13, "horse_name": "トーラスシャイン", "frame": 7, "mark": "", "p_win": 0.029453991079124, "withdrawn": false}, {"horse_no": 14, "horse_name": "メイショウセイロウ", "frame": 7, "mark": "△1", "p_win": 0.0790519148868995, "withdrawn": false}, {"horse_no": 15, "horse_name": "サトノワーグナー", "frame": 7, "mark": "◎", "p_win": 0.2170044526727332, "withdrawn": false}, {"horse_no": 16, "horse_name": "スティールブルー", "frame": 8, "mark": "", "p_win": 0.0378990926871389, "withdrawn": false}, {"horse_no": 17, "horse_name": "ポッドロワール", "frame": 8, "mark": "▲", "p_win": 0.0801890835977282, "withdrawn": false}, {"horse_no": 18, "horse_name": "アイルシャイン", "frame": 8, "mark": "", "p_win": 0.0295978952134138, "withdrawn": false}]}, {"leg": 4, "track": "京都", "race_no": 11, "race_name": "トルマリンステークス 3勝", "start_time": "15:30", "start_at": "2026-10-17T15:30:00+09:00", "horses": [{"horse_no": 1, "horse_name": "ウィンターダフネ", "frame": 1, "mark": "", "p_win": 0.0269028940070486, "withdrawn": false}, {"horse_no": 2, "horse_name": "コンドゥイア", "frame": 2, "mark": "", "p_win": 0.0208900258121981, "withdrawn": false}, {"horse_no": 3, "horse_name": "メイショウオーロラ", "frame": 2, "mark": "", "p_win": 0.0088377482970463, "withdrawn": false}, {"horse_no": 4, "horse_name": "サイモンブーケ", "frame": 3, "mark": "", "p_win": 0.0055803699951686, "withdrawn": false}, {"horse_no": 5, "horse_name": "ジューンエオス", "frame": 3, "mark": "△4", "p_win": 0.0545895774143982, "withdrawn": false}, {"horse_no": 6, "horse_name": "エルフストラック", "frame": 4, "mark": "△2", "p_win": 0.0698656767772298, "withdrawn": false}, {"horse_no": 7, "horse_name": "エリカサファイア", "frame": 4, "mark": "△3", "p_win": 0.0718392791057539, "withdrawn": false}, {"horse_no": 8, "horse_name": "スマートケープ", "frame": 5, "mark": "", "p_win": 0.0137620321193101, "withdrawn": false}, {"horse_no": 9, "horse_name": "エアトベーレ", "frame": 5, "mark": "○", "p_win": 0.1777768374866271, "withdrawn": false}, {"horse_no": 10, "horse_name": "マジックローズ", "frame": 6, "mark": "△1", "p_win": 0.1293734408462789, "withdrawn": false}, {"horse_no": 11, "horse_name": "モモンウールー", "frame": 6, "mark": "", "p_win": 0.023156734389123, "withdrawn": false}, {"horse_no": 12, "horse_name": "プリンセッサ", "frame": 7, "mark": "▲", "p_win": 0.1257209444698791, "withdrawn": false}, {"horse_no": 13, "horse_name": "キャットテイル", "frame": 7, "mark": "△5", "p_win": 0.0472603659278424, "withdrawn": false}, {"horse_no": 14, "horse_name": "メイショウコマチ", "frame": 8, "mark": "◎", "p_win": 0.2112038151725549, "withdrawn": false}, {"horse_no": 15, "horse_name": "エンセリオ", "frame": 8, "mark": "", "p_win": 0.0132402581795402, "withdrawn": false}]}, {"leg": 5, "track": "東京", "race_no": 11, "race_name": "第29回 富士ステークス G2", "start_time": "15:45", "start_at": "2026-10-17T15:45:00+09:00", "horses": [{"horse_no": 1, "horse_name": "ファンダム", "frame": 1, "mark": "○", "p_win": 0.1686646292390552, "withdrawn": false}, {"horse_no": 2, "horse_name": "ミトノオルフェ", "frame": 2, "mark": "", "p_win": 0.0174708027950505, "withdrawn": false}, {"horse_no": 3, "horse_name": "シンフォーエバー", "frame": 3, "mark": "", "p_win": 0.0046611177143483, "withdrawn": false}, {"horse_no": 4, "horse_name": "トロヴァトーレ", "frame": 3, "mark": "▲", "p_win": 0.147786167613488, "withdrawn": false}, {"horse_no": 5, "horse_name": "アドマイヤズーム", "frame": 4, "mark": "△1", "p_win": 0.1579651497337292, "withdrawn": false}, {"horse_no": 6, "horse_name": "デビットバローズ", "frame": 4, "mark": "", "p_win": 0.0215797468377534, "withdrawn": false}, {"horse_no": 7, "horse_name": "ウォーターリヒト", "frame": 5, "mark": "", "p_win": 0.0175632749489142, "withdrawn": false}, {"horse_no": 8, "horse_name": "マジックサンズ", "frame": 5, "mark": "△3", "p_win": 0.0579753422534551, "withdrawn": false}, {"horse_no": 9, "horse_name": "キープカルム", "frame": 6, "mark": "", "p_win": 0.0176640266399218, "withdrawn": false}, {"horse_no": 10, "horse_name": "アンパドゥ", "frame": 6, "mark": "◎", "p_win": 0.1991608229338901, "withdrawn": false}, {"horse_no": 11, "horse_name": "ファーヴェント", "frame": 7, "mark": "△4", "p_win": 0.0322040373526694, "withdrawn": false}, {"horse_no": 12, "horse_name": "エンペラーズソード", "frame": 7, "mark": "△5", "p_win": 0.0261564071244428, "withdrawn": false}, {"horse_no": 13, "horse_name": "シュガークン", "frame": 8, "mark": "", "p_win": 0.0253898572886199, "withdrawn": false}, {"horse_no": 14, "horse_name": "エコロアルバ", "frame": 8, "mark": "△2", "p_win": 0.1057586175246619, "withdrawn": false}]}], "source_identity": "fb191d2eda091fe2933c2d5be415f5540675436b43b3dc4f6043e143ba31df86", "source_index_sha256": "df88667e52db7b7c4e66dbde8652b4d04f9eea304f6a86a6a1e0e03e43aad023", "source_prediction_sha256": "80199f4fcdcb40eadcdf006bcc615fc12d3c336af64813c46c1b70ca27274fa6", "schedule_source_url": "https://www.jra.go.jp/kouza/win5/info/racelist.html", "schedule_observed_at": "2026-10-17T14:52:48.647954+09:00", "first_start_at": "2026-10-17T14:50:00+09:00", "selection_scope": "draft_only", "submission_connected": false, "can_submit": false, "plans": {"30": {"model_id": "current-win-preview-v1", "adopted": false, "budget_points": 30, "selected": [[6, 7], [3], [15], [14, 9, 10], [10, 1, 5, 4, 14]], "pattern": [2, 1, 1, 3, 5], "points": 30, "unit_yen": 100, "amount_yen": 3000, "estimated_independent_coverage": 0.01435815119807858, "submission_connected": false, "can_submit": false}, "50": {"model_id": "current-win-preview-v1", "adopted": false, "budget_points": 50, "selected": [[6, 7], [3], [15], [14, 9, 10, 12, 7], [10, 1, 5, 4, 14]], "pattern": [2, 1, 1, 5, 5], "points": 50, "unit_yen": 100, "amount_yen": 5000, "estimated_independent_coverage": 0.01983047136756377, "submission_connected": false, "can_submit": false}, "100": {"model_id": "current-win-preview-v1", "adopted": false, "budget_points": 100, "selected": [[6, 7], [3, 4], [15], [14, 9, 10, 12, 7], [10, 1, 5, 4, 14]], "pattern": [2, 2, 1, 5, 5], "points": 100, "unit_yen": 100, "amount_yen": 10000, "estimated_independent_coverage": 0.029975967571113576, "submission_connected": false, "can_submit": false}}, "model_status": {}}, "20261018": {"status": "ready", "date": "20261018", "legs": [{"leg": 1, "track": "東京", "race_no": 10, "race_name": "西湖特別 2勝", "start_time": "14:45", "start_at": "2026-10-18T14:45:00+09:00", "horses": [{"horse_no": 1, "horse_name": "ライジンマル", "frame": 1, "mark": "△4", "p_win": 0.0174854713411516, "withdrawn": false}, {"horse_no": 2, "horse_name": "ヨシヒロ", "frame": 2, "mark": "", "p_win": 0.0091532136467811, "withdrawn": false}, {"horse_no": 3, "horse_name": "コスモストーム", "frame": 3, "mark": "○", "p_win": 0.2154171392869781, "withdrawn": false}, {"horse_no": 4, "horse_name": "レッドベルダンス", "frame": 4, "mark": "▲", "p_win": 0.1091872082626732, "withdrawn": false}, {"horse_no": 5, "horse_name": "マクミランテソーロ", "frame": 5, "mark": "△2", "p_win": 0.0522121629021791, "withdrawn": false}, {"horse_no": 6, "horse_name": "ファイアマン", "frame": 6, "mark": "△1", "p_win": 0.1151252500005291, "withdrawn": false}, {"horse_no": 7, "horse_name": "ヘリオトロープ", "frame": 7, "mark": "◎", "p_win": 0.4376162346284118, "withdrawn": false}, {"horse_no": 8, "horse_name": "タイヨウフレア", "frame": 8, "mark": "△5", "p_win": 0.0145009528307358, "withdrawn": false}, {"horse_no": 9, "horse_name": "マンダリンボレロ", "frame": 8, "mark": "△3", "p_win": 0.0293023671005602, "withdrawn": false}]}, {"leg": 2, "track": "京都", "race_no": 10, "race_name": "聚楽第特別 2勝", "start_time": "14:55", "start_at": "2026-10-18T14:55:00+09:00", "horses": [{"horse_no": 1, "horse_name": "アールプロスト", "frame": 1, "mark": "△4", "p_win": 0.0475105553880529, "withdrawn": false}, {"horse_no": 2, "horse_name": "ビルンバウム", "frame": 2, "mark": "△3", "p_win": 0.0577859598954764, "withdrawn": false}, {"horse_no": 3, "horse_name": "ポッドフォルク", "frame": 3, "mark": "△1", "p_win": 0.1088469310907127, "withdrawn": false}, {"horse_no": 4, "horse_name": "ショーダンサー", "frame": 4, "mark": "○", "p_win": 0.1601391644918352, "withdrawn": false}, {"horse_no": 5, "horse_name": "ヒデノレインボー", "frame": 5, "mark": "", "p_win": 0.012304848588594, "withdrawn": false}, {"horse_no": 6, "horse_name": "エンマ", "frame": 6, "mark": "", "p_win": 0.0239777373995961, "withdrawn": false}, {"horse_no": 7, "horse_name": "フクキタテーラー", "frame": 7, "mark": "△5", "p_win": 0.037517114886128, "withdrawn": false}, {"horse_no": 8, "horse_name": "ジョータルマエ", "frame": 7, "mark": "△2", "p_win": 0.0661819532425985, "withdrawn": false}, {"horse_no": 9, "horse_name": "ホウショウルクス", "frame": 8, "mark": "◎", "p_win": 0.3271272270430954, "withdrawn": false}, {"horse_no": 10, "horse_name": "マハートマーベル", "frame": 8, "mark": "▲", "p_win": 0.1586085079739101, "withdrawn": false}]}, {"leg": 3, "track": "新潟", "race_no": 11, "race_name": "新潟牝馬ステークス L", "start_time": "15:10", "start_at": "2026-10-18T15:10:00+09:00", "horses": [{"horse_no": 1, "horse_name": "ウインデイジー", "frame": 1, "mark": "△2", "p_win": 0.0957373259240437, "withdrawn": false}, {"horse_no": 2, "horse_name": "ダンツエラン", "frame": 2, "mark": "", "p_win": 0.0188068160992912, "withdrawn": false}, {"horse_no": 3, "horse_name": "シャドウメテオ", "frame": 3, "mark": "◎", "p_win": 0.2396055056118883, "withdrawn": false}, {"horse_no": 4, "horse_name": "ヴェルミセル", "frame": 4, "mark": "△5", "p_win": 0.0224758160462677, "withdrawn": false}, {"horse_no": 5, "horse_name": "カニキュル", "frame": 5, "mark": "▲", "p_win": 0.1428384307555478, "withdrawn": false}, {"horse_no": 6, "horse_name": "パフュームセント", "frame": 6, "mark": "○", "p_win": 0.1876685926908284, "withdrawn": false}, {"horse_no": 7, "horse_name": "セントメモリーズ", "frame": 7, "mark": "", "p_win": 0.014717495771757, "withdrawn": false}, {"horse_no": 8, "horse_name": "ルールーリマ", "frame": 7, "mark": "△1", "p_win": 0.132473199253527, "withdrawn": false}, {"horse_no": 9, "horse_name": "フレミングフープ", "frame": 8, "mark": "△4", "p_win": 0.0564537201515963, "withdrawn": false}, {"horse_no": 10, "horse_name": "ケリフレッドアスク", "frame": 8, "mark": "△3", "p_win": 0.0892230976952523, "withdrawn": false}]}, {"leg": 4, "track": "東京", "race_no": 11, "race_name": "ブラジルカップ L", "start_time": "15:20", "start_at": "2026-10-18T15:20:00+09:00", "horses": [{"horse_no": 1, "horse_name": "ダブルジョーク", "frame": 1, "mark": "", "p_win": 0.0258862368054512, "withdrawn": false}, {"horse_no": 2, "horse_name": "メイプルリッジ", "frame": 2, "mark": "△1", "p_win": 0.1084497675800581, "withdrawn": false}, {"horse_no": 3, "horse_name": "ルシュヴァルドール", "frame": 3, "mark": "△4", "p_win": 0.0498821853603452, "withdrawn": false}, {"horse_no": 4, "horse_name": "ロードプレジール", "frame": 4, "mark": "", "p_win": 0.0307350753777018, "withdrawn": false}, {"horse_no": 5, "horse_name": "ピカピカサンダー", "frame": 4, "mark": "△3", "p_win": 0.0538712598913536, "withdrawn": false}, {"horse_no": 6, "horse_name": "ハピ", "frame": 5, "mark": "◎", "p_win": 0.246349633536572, "withdrawn": false}, {"horse_no": 7, "horse_name": "リアレスト", "frame": 5, "mark": "▲", "p_win": 0.1064180692701169, "withdrawn": false}, {"horse_no": 8, "horse_name": "ピュアキアン", "frame": 6, "mark": "", "p_win": 0.0198097150919668, "withdrawn": false}, {"horse_no": 9, "horse_name": "クールミラボー", "frame": 6, "mark": "○", "p_win": 0.1734577880653113, "withdrawn": false}, {"horse_no": 10, "horse_name": "ハグ", "frame": 7, "mark": "△5", "p_win": 0.0456229675521566, "withdrawn": false}, {"horse_no": 11, "horse_name": "レッドプロフェシー", "frame": 7, "mark": "", "p_win": 0.0317967223963096, "withdrawn": false}, {"horse_no": 12, "horse_name": "リチュアル", "frame": 8, "mark": "", "p_win": 0.0348301408035389, "withdrawn": false}, {"horse_no": 13, "horse_name": "カズタンジャー", "frame": 8, "mark": "△2", "p_win": 0.0728904382691174, "withdrawn": false}]}, {"leg": 5, "track": "京都", "race_no": 11, "race_name": "第31回 秋華賞 G1", "start_time": "15:40", "start_at": "2026-10-18T15:40:00+09:00", "horses": [{"horse_no": 1, "horse_name": "ギャラボーグ", "frame": 1, "mark": "", "p_win": 0.0432952808027739, "withdrawn": false}, {"horse_no": 2, "horse_name": "テイエムアイラン", "frame": 1, "mark": "", "p_win": 0.0417285974082006, "withdrawn": false}, {"horse_no": 3, "horse_name": "マスターソアラ", "frame": 2, "mark": "◎", "p_win": 0.2116177027093277, "withdrawn": false}, {"horse_no": 4, "horse_name": "エンネ", "frame": 2, "mark": "△1", "p_win": 0.066276685174635, "withdrawn": false}, {"horse_no": 5, "horse_name": "タイセイボーグ", "frame": 3, "mark": "", "p_win": 0.0209957549076262, "withdrawn": false}, {"horse_no": 6, "horse_name": "ラベルセーヌ", "frame": 3, "mark": "○", "p_win": 0.1549212424260909, "withdrawn": false}, {"horse_no": 7, "horse_name": "バースデイフライト", "frame": 4, "mark": "", "p_win": 0.0164707162959641, "withdrawn": false}, {"horse_no": 8, "horse_name": "モンローウォーク", "frame": 4, "mark": "▲", "p_win": 0.1110031143648087, "withdrawn": false}, {"horse_no": 9, "horse_name": "スウィートハピネス", "frame": 5, "mark": "", "p_win": 0.0118854693584107, "withdrawn": false}, {"horse_no": 10, "horse_name": "ナイスプレーアスク", "frame": 5, "mark": "", "p_win": 0.0188598377811699, "withdrawn": false}, {"horse_no": 11, "horse_name": "ガーネットフレア", "frame": 6, "mark": "", "p_win": 0.0351695567348894, "withdrawn": false}, {"horse_no": 12, "horse_name": "カナルサンマルタン", "frame": 6, "mark": "△5", "p_win": 0.0625386332033606, "withdrawn": false}, {"horse_no": 13, "horse_name": "ドリームコア", "frame": 7, "mark": "△2", "p_win": 0.0729953664123864, "withdrawn": false}, {"horse_no": 14, "horse_name": "サムシングスイート", "frame": 7, "mark": "△4", "p_win": 0.0439090158960919, "withdrawn": false}, {"horse_no": 15, "horse_name": "フェスティバルヒル", "frame": 8, "mark": "", "p_win": 0.006181495250824, "withdrawn": false}, {"horse_no": 16, "horse_name": "ハヤブササキチャン", "frame": 8, "mark": "△3", "p_win": 0.0618342125469567, "withdrawn": false}, {"horse_no": 17, "horse_name": "ロザーンジュ", "frame": 8, "mark": "", "p_win": 0.0203173187264821, "withdrawn": false}]}], "source_identity": "cff6d03257668e33e33f95cd075d76cbc89343f2cd60f447d41ce80f8dcb0609", "source_index_sha256": "7d84a4de0e93d7e24219e1c980dbcddf345a7e3593edb5bbf2f23a7b80dfe492", "source_prediction_sha256": "589f8b3f6912c830761ff2e445a38982a5f8c9e5f761c913ab2c6f3ecf6e3121", "schedule_source_url": "https://www.jra.go.jp/kouza/win5/info/racelist.html", "schedule_observed_at": "2026-10-17T14:52:48.647954+09:00", "first_start_at": "2026-10-18T14:45:00+09:00", "selection_scope": "draft_only", "submission_connected": false, "can_submit": false, "plans": {"30": {"model_id": "current-win-preview-v1", "adopted": false, "budget_points": 30, "selected": [[7], [9], [3, 6, 5, 8, 1], [6, 9], [3, 6, 8]], "pattern": [1, 1, 5, 2, 3], "points": 30, "unit_yen": 100, "amount_yen": 3000, "estimated_independent_coverage": 0.022911342022657145, "submission_connected": false, "can_submit": false}, "50": {"model_id": "current-win-preview-v1", "adopted": false, "budget_points": 50, "selected": [[7], [9, 4, 10], [3, 6, 5, 8], [6, 9], [3, 6]], "pattern": [1, 3, 4, 2, 2], "points": 48, "unit_yen": 100, "amount_yen": 4800, "estimated_independent_coverage": 0.030557047787370097, "submission_connected": false, "can_submit": false}, "100": {"model_id": "current-win-preview-v1", "adopted": false, "budget_points": 100, "selected": [[7], [9, 4, 10, 3], [3, 6, 5, 8], [6, 9], [3, 6, 8]], "pattern": [1, 4, 4, 2, 3], "points": 96, "unit_yen": 100, "amount_yen": 9600, "estimated_independent_coverage": 0.04652018156750751, "submission_connected": false, "can_submit": false}}, "model_status": {}}}, "models": [{"id": "manual", "label": "手動選定", "adopted": false}, {"id": "current-win-preview-v1", "label": "研究用・現在の勝率予測順", "adopted": false}], "horse_model_release": "2.08", "links": {"race_information": "https://race.netkeiba.com/top/win5.html?rf=sidemenu", "ipat_login": "https://www.ipat.jra.go.jp/sp/"}, "history_progress": {"release": "2.08", "status": "running", "completed_days": 21, "total_days": 196, "last_day": "20250308", "scope": "horse_predictions_only"}, "mode": "win5_selection_only", "submission_connected": false, "can_submit": false};
+const W=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const yen=n=>Number(n||0).toLocaleString('ja-JP')+'円';
+let selected=[[],[],[],[],[]];
+if(String(location.search||'').includes('embed=1'))document.documentElement.classList.add('embedded');
+const embeddedTheme=String(location.search||'').match(/[?&]theme=(day|night)(?:&|$)/);
+if(embeddedTheme)document.documentElement.dataset.displayTheme=embeddedTheme[1];
+for(const date of WIN5_CATALOG.dates){const o=document.createElement('option');o.value=date;o.textContent=date.slice(4,6)+'/'+date.slice(6);W('win5Date').appendChild(o)}
+W('win5Date').value=WIN5_CATALOG.dates[0]||'';
+const requestedDate=String(location.hash||'').match(/(?:^#|&)date=(\d{8})(?:&|$)/);
+if(requestedDate&&WIN5_CATALOG.dates.includes(requestedDate[1]))W('win5Date').value=requestedDate[1];
+W('win5Info').href=WIN5_CATALOG.links.race_information;W('win5Login').href=WIN5_CATALOG.links.ipat_login;
+function day(){return WIN5_CATALOG.days[W('win5Date').value]||{status:'unavailable',reason:'対象日がありません',legs:[]}}
+function key(){return 'keiba.win5.draft.v1.'+W('win5Date').value}
+function tell(text,error=false){W('win5Message').textContent=text;W('win5Message').classList.toggle('error',error)}
+function draft(){
+ const d=day(),budget=Number(W('win5Budget').value),model=W('win5Model').value;
+ if(d.status!=='ready'||d.legs.length!==5)throw Error('対象5レースを確認できません');
+ if(![30,50,100].includes(budget)||!WIN5_CATALOG.models.some(m=>m.id===model))throw Error('選定条件を確認してください');
+ for(let i=0;i<5;i++){
+  const allowed=new Set(d.legs[i].horses.filter(h=>!h.withdrawn).map(h=>h.horse_no));
+  if(!Array.isArray(selected[i])||!selected[i].length)throw Error('各レースを1頭以上選んでください');
+  if(new Set(selected[i]).size!==selected[i].length||selected[i].some(n=>!allowed.has(n)))throw Error('対象外の馬が選択されています');
+ }
+ const points=selected.reduce((p,ns)=>p*ns.length,1);if(points>budget)throw Error('点数上限を超えています');
+ return {schema:WIN5_CATALOG.schema,date:d.date,source_identity:d.source_identity,model_id:model,model_adopted:false,budget_points:budget,legs:d.legs.map((l,i)=>({leg:l.leg,track:l.track,race_no:l.race_no,horse_nos:selected[i].slice().sort((a,b)=>a-b)})),points,unit_yen:100,amount_yen:points*100,submission_connected:false,can_submit:false};
+}
+function updateSummary(){
+ const counts=selected.map(ns=>ns.length),points=counts.reduce((p,n)=>p*n,1),budget=Number(W('win5Budget').value);
+ W('win5Summary').innerHTML='<span>'+counts.join(' × ')+'頭</span><b>'+points+'点 · '+yen(points*100)+'</b>';
+ let valid=false;try{draft();valid=true}catch(_){}
+ W('win5Save').disabled=!valid;
+ if(points>budget)tell('上限'+budget+'点を超えています。選定を調整してください。',true);
+}
+function draw(){
+ const d=day();
+ const progress=WIN5_CATALOG.history_progress;
+ W('win5History').hidden=!progress;
+ if(progress)W('win5History').textContent='Ver'+progress.release+' 過去再予測：'+({running:'実行中',complete:'完了',partial:'途中保存',failed:'検査停止'}[progress.status]||'確認中')+' '+progress.completed_days+'/'+progress.total_days+'開催';
+ W('win5Meta').textContent='馬予測 Ver'+WIN5_CATALOG.horse_model_release+' · 表示更新 '+WIN5_CATALOG.captured_at.slice(5,10).replace('-','/')+' '+WIN5_CATALOG.captured_at.slice(11,19)+' · 選定用データ';
+ W('win5Generate').disabled=d.status!=='ready'||W('win5Model').value==='manual'||!d.plans?.[W('win5Budget').value];
+ if(d.status!=='ready'){W('win5Legs').innerHTML='<p class="empty">'+esc(d.reason||'WIN5対象を確認中です')+'</p>';updateSummary();return}
+ const colors=['','#fff','#202225','#e53935','#2979d8','#f4d538','#2f984d','#ef8a2e','#ef9ebd'];
+ W('win5Legs').innerHTML=d.legs.map((l,i)=>'<article class="win5-leg"><h2>WIN'+l.leg+' '+esc(l.track)+l.race_no+'R</h2><p>'+esc(l.race_name)+' · '+esc(l.start_time)+'発走</p><div class="win5-horses">'+l.horses.map(h=>{
+  const bg=colors[h.frame]||'#d2d7df',fg=[2,3,4,6].includes(h.frame)?'#fff':'#111';
+  return '<button type="button" class="win5-horse" data-leg="'+i+'" data-horse="'+h.horse_no+'" aria-pressed="'+selected[i].includes(h.horse_no)+'"'+(h.withdrawn?' disabled':'')+'><span class="num" style="background:'+bg+';color:'+fg+'">'+h.horse_no+'</span><span class="mark">'+esc(h.mark)+'</span><span class="name">'+esc(h.horse_name)+'</span><span class="prob">'+(h.withdrawn?'取消':h.p_win==null?'—':(h.p_win*100).toFixed(1)+'%')+'</span></button>';
+ }).join('')+'</div></article>').join('');
+ document.querySelectorAll('[data-horse]').forEach(b=>b.addEventListener('click',()=>{
+  const i=Number(b.dataset.leg),n=Number(b.dataset.horse);selected[i]=selected[i].includes(n)?selected[i].filter(x=>x!==n):selected[i].concat(n);
+  W('win5Model').value='manual';tell('手動選定の下書き');draw();
+ }));updateSummary();
+}
+function restore(){
+ selected=[[],[],[],[],[]];W('win5Model').value='manual';tell('馬を選ぶか、研究用モデルを選択して候補選定してください。');
+ try{
+  const saved=JSON.parse(localStorage.getItem(key())||'null');
+  if(saved){
+   if(saved.source_identity!==day().source_identity){tell('予測データが更新されています。保存下書きは再確認してください。',true)}
+   else if(saved.date===day().date&&Array.isArray(saved.legs)&&saved.legs.length===5){
+    W('win5Budget').value=String(saved.budget_points);W('win5Model').value=saved.model_id;
+    selected=saved.legs.map((l,i)=>{
+     const live=day().legs[i];if(l.track!==live.track||l.race_no!==live.race_no)throw Error('対象レースが変わりました');return l.horse_nos;
+    });draft();tell('保存した下書きを表示しています。');
+   }
+  }
+ }catch(_){selected=[[],[],[],[],[]];W('win5Model').value='manual';W('win5Budget').value='30';tell('保存下書きを確認できません。選び直してください。',true)}
+ draw();
+}
+W('win5Date').addEventListener('change',restore);
+W('win5Model').addEventListener('change',()=>{tell(W('win5Model').value==='manual'?'手動で各レースの馬を選んでください。':'研究用モデルは未採用です。候補選定で配分を確認できます。');draw()});
+W('win5Budget').addEventListener('change',()=>{tell('点数上限を変更しました。必要に応じて候補を選び直してください。');draw()});
+W('win5Generate').addEventListener('click',()=>{
+ const plan=day().plans?.[W('win5Budget').value];
+ if(W('win5Model').value!=='current-win-preview-v1'||!plan){tell('研究用の勝率予測が揃っていません。',true);return}
+ selected=plan.selected.map(ns=>ns.slice());tell('研究用・現在の勝率予測順で選定しました。購入予約には送信していません。');draw();
+});
+W('win5Save').addEventListener('click',()=>{try{const value=draft();localStorage.setItem(key(),JSON.stringify(value));tell('このブラウザに下書きを保存しました。')}catch(e){tell(e.message,true)}});
+restore();
+</script></body></html>
