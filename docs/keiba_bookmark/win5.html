@@ -395,6 +395,20 @@ td {border-color:var(--line)}
 .companion-page .bar-meta,.companion-page .t3item,.companion-page .t3nm,.companion-page .mkr,.companion-page .empty {color:var(--text)}
 .companion-page .statcard,.companion-page .barwrap,.companion-page .vbarwrap,.companion-page .t3pick {background:var(--panel2);border-color:var(--line);box-shadow:none}
 .companion-prediction .mkr,.companion-page .honmei,.companion-page .otakara,.companion-page .total,.companion-page .top5chip {background:#273241;color:#edf2f8;border-color:#566373}
+
+/* Tipster charts only: generic honmei/otakara badges must not mask the fills. */
+.companion-prediction .vbarwrap,.companion-performance .barwrap {background:#172331;border-color:#6a7c91}
+.companion-prediction .vbar,.companion-performance .barwrap>.bar {background:transparent}
+.companion-prediction .vbar>.vseg.honmei,.companion-performance .bar>.seg.honmei {background:linear-gradient(90deg,#f2b544,#ffe18a)}
+.companion-prediction .vbar>.vseg.otakara,.companion-performance .bar>.seg.otakara {background:linear-gradient(90deg,#a9c4df,#e2edf7)}
+.companion-prediction .mkr.total {background:#173c32;color:#e8fff3;border-color:#70aa91}
+.companion-prediction .mkr.none {background:#273448;color:#edf2f8;border-color:#71849a}
+.companion-prediction .vote-counts {display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:6px;color:var(--text);font-size:12px;font-weight:650;font-variant-numeric:tabular-nums;line-height:1.5}
+.companion-prediction .vote-counts>span {display:inline-flex;align-items:center;gap:5px;color:var(--text)}
+.companion-prediction .vote-counts>span::before {content:"";display:inline-block;width:8px;height:8px;border-radius:2px}
+.companion-prediction .vote-counts>.count-honmei::before {background:#f2b544}
+.companion-prediction .vote-counts>.count-otakara::before {background:#c5d8e9}
+.companion-performance .bar-meta,.companion-performance .bar-meta .mut {color:var(--text)}
 </style><script id="keiba-shared-theme-js">(() => {
   const key='keibaDisplayTheme';
   let theme='night';
