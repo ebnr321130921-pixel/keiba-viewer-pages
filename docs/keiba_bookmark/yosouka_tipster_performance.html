@@ -497,6 +497,12 @@ td {border-color:var(--line)}
 .companion-prediction .horse .hright {display:block;flex:0 0 auto;white-space:nowrap}
 .companion-prediction .tipster-voter-button {cursor:pointer;min-height:26px;padding:6px 10px;white-space:nowrap;font:inherit;line-height:1}
 .companion-prediction .tipster-voter-button:focus-visible {outline:2px solid #d7daa2;outline-offset:2px}
+.style-indicator{display:inline-flex;align-items:center;gap:5px;color:inherit;line-height:1.25;vertical-align:middle;font-size:11px;font-weight:500}
+.style-symbols{font-family:Arial,"Hiragino Kaku Gothic ProN",sans-serif;white-space:nowrap;letter-spacing:0;font-size:11px;font-weight:400}
+.style-indicator.compact{justify-content:center;gap:0;max-width:100%}
+.style-indicator.compact .style-symbols{font-size:10px}
+.horse-number-stack{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0}
+.card .horse-number-stack .umabadge{width:100%}
 </style><script id="keiba-shared-theme-js">(() => {
   const key='keibaDisplayTheme';
   let theme='night';
@@ -546,7 +552,7 @@ td {border-color:var(--line)}
       <!-- ★ 一括表示/非表示 -->
       <button id="toggleStatsBtn" class="btn" type="button">詳細を非表示</button>
 
-      <span class="pill">更新: 2026-10-18 14:57</span>
+      <span class="pill">更新: 2026-10-18 15:02</span>
     </div>
 
     <div id="list" style="margin-top:10px;"></div>
