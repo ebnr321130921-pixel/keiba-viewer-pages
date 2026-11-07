@@ -382,6 +382,14 @@ button,select,input,textarea {font-family:var(--viewer-font)}
 .pack4c-plot {background:var(--panel2);border-color:var(--line)}
 thead th {background:var(--panel2);color:var(--ink);border-color:var(--line)}
 td {border-color:var(--line)}
+/* Desktop rows and sticky headers had local night colors overriding the theme. */
+:root[data-display-theme="day"] {background:var(--bg)}
+:root[data-display-theme="day"] .tablewrap tbody tr {--rowbg:var(--panel)}
+:root[data-display-theme="day"] .tablewrap tbody tr:nth-child(even) {--rowbg:var(--panel2)}
+:root[data-display-theme="day"] .tablewrap thead th,
+:root[data-display-theme="day"] .tablewrap th.sticky-left-1,
+:root[data-display-theme="day"] .tablewrap th.sticky-left-2 {background:var(--panel2);color:var(--text)}
+:root[data-display-theme="day"] #pack4cDir.pack4c-legend-chip {color:var(--text)!important;border-color:var(--line)!important;box-shadow:none!important}
 .view-switch {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 10px}
 .view-switch a,.view-switch .theme-toggle {display:flex;align-items:center;justify-content:center;height:40px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);text-decoration:none;font-size:12px;font-weight:700}
 .view-switch a.active {background:#172f55;color:white;border-color:#172f55}
